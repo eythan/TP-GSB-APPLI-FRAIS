@@ -1,121 +1,253 @@
-/* Style général pour le corps de la page */
-body {
-    background-color: #f4f4f9;
-    color: #333;
-    font-family: Arial, sans-serif;
+/* ------------------------------------ 
+   Global Styles
+------------------------------------ */
+* {
     margin: 0;
     padding: 0;
-}
-
-/* Conteneur principal utilisant Flexbox pour la disposition */
-#container {
-    display: flex;
-    height: 100vh;
-}
-
-/* Section de gauche avec le logo et le menu */
-#gauche {
-    width: 20%;
-    background-color: #fff;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-
-/* Style pour le logo */
-#coin img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-/* Style pour le menu */
-#menu h2 {
-    font-size: 1.5em;
-    margin-top: 20px;
-}
-
-#menu ul {
-    list-style-type: none;
+    box-sizing: border-box;
+  }
+  
+  /* Fond général de la page */
+  body {
+    font-family: 'Roboto', sans-serif; /* Police moderne et épurée */
+    background: linear-gradient(135deg, #1a1a1a, #343434); /* Dégradé futuriste de gris foncé */
+    color: #f4f4f4; /* Couleur du texte claire pour contraster avec le fond sombre */
     padding: 0;
-}
-
-#menu ul li {
-    margin: 10px 0;
-}
-
-#menu ul li a {
-    text-decoration: none;
-    color: #5599EE;
-}
-
-#menu ul li a:hover {
-    text-decoration: underline;
-}
-
-/* Section de droite avec le contenu principal */
-#droite {
-    width: 80%;
+    margin: 0;
+  }
+  
+  /* ------------------------------------ 
+     Layout principal (container, gauche, droite)
+  ------------------------------------ */
+  
+  /* Conteneur principal de la page */
+  #container {
+    display: flex;
+    flex-direction: row; /* Disposition en ligne (gauche et droite côte à côte) */
+    justify-content: space-between; /* Espacement entre les colonnes */
+    min-height: 100vh; /* Prendre toute la hauteur de la fenêtre */
     padding: 20px;
-}
-
-/* Style pour la section haute */
-#haut {
-    margin-bottom: 20px;
-}
-
-/* Style pour la section bas */
-#bas {
-    background-color: #fff;
+  }
+  
+  /* Colonne de gauche */
+  #gauche, #droite {
+    display: flex;
+    flex-direction: column;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-}
-
-/* Style pour les titres */
-h1 {
-    color: #5599EE;
-}
-
-/* Style pour le formulaire */
-form {
-    max-width: 100%;
-}
-
-/* Style pour les titres de section */
-.titre {
-    font-weight: bold;
+    background: rgba(255, 255, 255, 0.05); /* Fond transparent léger pour un effet futuriste */
+    border-radius: 10px; /* Coins arrondis */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Ombre portée pour créer de la profondeur */
+    transition: box-shadow 0.3s ease-in-out; /* Transition fluide uniquement sur l'ombre */
+  }
+  
+  /* Colonne de gauche (menu) */
+  #gauche {
+    width: 25%;
+    margin-right: 20px; /* Espacement à droite */
+  }
+  
+  /* Colonne de droite (contenu principal) */
+  #droite {
+    width: 90%;
+  }
+  
+  /* Supprimé l'effet de zoom et l'effet de survol sur les colonnes */
+  
+  /* Image du logo dans la colonne gauche */
+  #coin img {
+    width: 100px; /* Taille de l'image */
+    height: auto; /* Conserver les proportions de l'image */
+    margin-bottom: 20px; /* Espacement sous l'image */
+  }
+  
+  /* ------------------------------------ 
+     Menu (liens)
+  ------------------------------------ */
+  
+  /* Section du menu */
+  #menu {
     margin-top: 20px;
-}
-
-/* Style pour les zones de saisie */
-.zone {
+  }
+  
+  /* Liste des éléments du menu */
+  #menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* Élément individuel du menu */
+  #menu li {
+    margin-bottom: 10px; /* Espacement entre les éléments du menu */
+  }
+  
+  /* Liens du menu */
+  #menu a {
+    color: #fff; /* Couleur des liens en blanc */
+    text-decoration: none; /* Retirer le souligné des liens */
+    font-size: 1.1rem; /* Taille de la police pour les liens */
+    display: block; /* Affichage en bloc pour occuper toute la largeur */
+    padding: 8px; /* Espacement autour du texte */
+    border-radius: 5px; /* Coins arrondis des liens */
+    transition: background-color 0.3s, transform 0.3s; /* Transition sur le changement de couleur et sur le déplacement */
+  }
+  
+  /* Effet de survol sur les liens du menu */
+  #menu a:hover {
+    background-color: #3a7bd5; /* Couleur de fond du lien lors du survol */
+    transform: translateX(5px); /* Déplacement léger du lien vers la droite */
+  }
+  
+  /* ------------------------------------ 
+     Contenu (haut et bas)
+  ------------------------------------ */
+  
+  /* Section du titre dans la colonne droite */
+  #haut h1 {
+    font-size: 2.5rem; /* Taille de la police du titre */
+    color: #00d2ff; /* Couleur bleu clair futuriste */
+    margin-bottom: 20px; /* Espacement sous le titre */
+    text-shadow: 2px 2px 8px rgba(0, 210, 255, 0.6); /* Ombre portée pour un effet lumineux */
+  }
+  
+  /* Section du bas (formulaires, tableaux) */
+  #bas h1 {
+    font-size: 1.8rem;
+    color: #fff; /* Couleur blanche pour les titres */
+  }
+  
+  #bas h2 {
+    font-size: 1.4rem;
+    margin-top: 20px;
+    color: #00d2ff; /* Couleur des sous-titres */
+  }
+  
+  /* ------------------------------------ 
+     Formulaires et champs de saisie
+  ------------------------------------ */
+  
+  /* Titre des sections de formulaire */
+  .titre {
     margin-bottom: 10px;
-}
-
-/* Style pour les tableaux */
-table {
+  }
+  
+  /* Champs de saisie */
+  .zone {
+    width: 100%; /* Champs de saisie prennent toute la largeur disponible */
+    padding: 10px; /* Espacement interne */
+    margin: 10px 0; /* Espacement externe */
+    border-radius: 8px; /* Coins arrondis */
+    border: 1px solid #ddd; /* Bordure grise */
+    background-color: #333; /* Fond sombre */
+    color: #fff; /* Texte en blanc */
+    font-size: 1rem; /* Taille de la police */
+    transition: all 0.3s ease-in-out; /* Transition fluide lors du focus */
+  }
+  
+  /* Effet de surbrillance sur les champs de saisie lors du focus */
+  .zone:focus {
+    border-color: #3a7bd5; /* Bordure bleue lors du focus */
+    background-color: #444; /* Fond légèrement plus clair */
+    box-shadow: 0 0 10px rgba(58, 123, 213, 0.7); /* Ombre lumineuse autour du champ */
+  }
+  
+  /* ------------------------------------ 
+     Tableaux
+  ------------------------------------ */
+  
+  /* Style général des tableaux */
+  table {
     width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-th, td {
-    padding: 12px;
-    text-align: center;
-    border: 1px solid #ddd;
-}
-
-th {
-    background-color: #5599EE;
-    color: white;
-}
-
-/* Style pour les champs de saisie */
-input[type="text"] {
-    width: calc(100% - 22px);
+    margin-top: 20px;
+    border-collapse: collapse; /* Fusionner les bordures */
+  }
+  
+  /* Style des cellules du tableau */
+  th, td {
     padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+    text-align: center;
+    border: 1px solid #ddd; /* Bordures fines */
+  }
+  
+  /* En-têtes du tableau */
+  th {
+    background-color: #3a7bd5; /* Couleur de fond des en-têtes */
+    color: #fff; /* Texte en blanc */
+    text-transform: uppercase; /* Capitalisation du texte */
+  }
+  
+  /* Corps des cellules */
+  td {
+    background-color: #444; /* Fond sombre pour les cellules */
+  }
+  
+  /* Effet de survol sur les lignes du tableau */
+  tr:hover {
+    background-color: #555; /* Couleur de fond lorsque la souris survole une ligne */
+  }
+  
+  /* Couleurs alternées pour les lignes du tableau */
+  tr:nth-child(odd) {
+    background-color: #333; /* Fond pour les lignes impaires */
+  }
+  
+  tr:nth-child(even) {
+    background-color: #444; /* Fond pour les lignes paires */
+  }
+  
+  /* ------------------------------------ 
+     Boutons
+  ------------------------------------ */
+  
+  /* Style des boutons */
+  input[type="button"], input[type="submit"], input[type="reset"] {
+    padding: 10px 20px; /* Espacement interne */
+    font-size: 1rem; /* Taille de la police */
+    background-color: #3a7bd5; /* Couleur bleue pour les boutons */
+    color: #fff; /* Texte en blanc */
+    border: none;
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur en forme de main */
+    transition: background-color 0.3s ease; /* Transition sur la couleur */
+  }
+  
+  /* Effet de survol sur les boutons */
+  input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover {
+    background-color: #007bb5; /* Couleur bleue plus foncée lors du survol */
+  }
+  
+  /* Effet lors du clic sur les boutons */
+  input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active {
+    transform: translateY(0); /* Retour à la position initiale lors du clic */
+  }
+  
+  /* ------------------------------------ 
+     Responsive Design (pour les petits écrans)
+  ------------------------------------ */
+  
+  /* Media query pour les petits écrans */
+  @media screen and (max-width: 768px) {
+    #container {
+      flex-direction: column; /* Empiler les colonnes sur les petits écrans */
+    }
+  
+    #gauche, #droite {
+      width: 100%; /* Prendre toute la largeur sur mobile */
+    }
+  
+    #menu {
+      margin-top: 10px; /* Réduire l'espacement du menu */
+    }
+  
+    #haut h1 {
+      font-size: 2rem; /* Réduire la taille du titre */
+    }
+  
+    #bas h1 {
+      font-size: 1.5rem; /* Réduire la taille des sous-titres */
+    }
+  
+    .zone {
+      padding: 12px; /* Augmenter un peu l'espacement des champs */
+    }
+  }
+  
