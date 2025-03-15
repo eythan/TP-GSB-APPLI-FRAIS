@@ -7,6 +7,7 @@
     $mois = date("m");
     $annee = date("Y");
 
+    // Date de création des fiches de frais
     if($datefrais == 15) {
         // Écriture de la requête SQL
         $selectSQL = "SELECT id_utilisateur FROM utilisateurs";
