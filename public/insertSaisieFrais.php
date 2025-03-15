@@ -6,10 +6,10 @@
     $id_utilisateur = 1; ////// A MODIFIER ////// avec les cookie de l'utilisateur connecté
     $mois = $_POST["FRA_MOIS"];
     $annee = $_POST["FRA_AN"];
-    $repas = $_POST["FRA_REPAS"];
-    $nuit = $_POST["FRA_NUIT"];
-    $etape = $_POST["FRA_ETAP"];
-    $kilometre = $_POST["FRA_KM"];
+    $repas = (int) ($_POST["FRA_REPAS"] ?? 0); // Mettre si aucune valeur
+    $nuit = (int) ($_POST["FRA_NUIT"] ?? 0); // Mettre si aucune valeur
+    $etape = (int) ($_POST["FRA_ETAP"] ?? 0); // Mettre si aucune valeur
+    $kilometre = (int) ($_POST["FRA_KM"] ?? 0); // Mettre si aucune valeur
     $montant_valide = 0;
 
     // Calcul du nombre de justificatifs
@@ -21,25 +21,6 @@
     // Envoie de la requête, stockage dans $resultForfait
     $resultForfait = $db->query($selectForfaitSQL);
 
-    // Effectuer le traitement sur chaque frais forfait
-    foreach ($resultForfait as $ligneForfait) {
-        // // Récupération les données de la table frais_forfait
-        $id_frais = $ligneForfait['id_frais'];
-        $montant = $ligneForfait['montant'];
-        $description = $ligneForfait['description'];
-
-        // Vérifier la description et ajouter au montant valide
-        if ($description == "repas") {
-            $montant_valide = $montant_valide + $repas * $montant;
-        } elseif ($description == "nuit") {
-            $montant_valide = $montant_valide + $nuit * $montant;
-        } elseif ($description == "etape") {
-            $montant_valide = $montant_valide + $etape * $montant;
-        } elseif ($description == "kilométrage") {
-            $montant_valide = $montant_valide + $kilometre * $montant;
-        }
-    }
-
     // Écriture de la requête SQL
     $selectSQL = "SELECT id_utilisateur, mois, annee FROM fiche_frais WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
 
@@ -49,23 +30,44 @@
     // Stockage du résultat dans un tableau
     $ligne = $result->fetch();
 
-    // Boolean de fiche existante 
-    $existe = $ligne !== false;
-
     // Mettre à jour si la fiche existe
-    if ($existe) {
-        // Appel de la fonction updateFicheFrais
-        updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide);
-    } else {
+    if (!$ligne) {
         // Écriture de la requête SQL
         $insertSQL = "INSERT INTO fiche_frais (id_utilisateur, mois, annee, id_etat) VALUES ($id_utilisateur, $mois, $annee, 1)";
 
         // Envoie de la requête
         $db->exec($insertSQL);
-        
-        // Appel de la fonction updateFicheFrais
-        updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide);
     }
+
+    // Effectuer le traitement sur chaque frais forfait
+    foreach ($resultForfait as $ligneForfait) {
+        // // Récupération les données de la table frais_forfait
+        $id_frais = $ligneForfait['id_frais'];
+        $montant = $ligneForfait['montant'];
+        $description = $ligneForfait['description'];
+
+        // Vérifier la description et ajouter au montant valide
+        if ($description == "repas" && $repas != 0) {
+            $montant_valide = $montant_valide + $repas * $montant;
+                // Appel de la fonction updateLigneFraisForfait pour ligne_frais_forfait
+                updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $repas);
+        } elseif ($description == "nuit" && $nuit != 0) {
+            $montant_valide = $montant_valide + $nuit * $montant;
+                // Appel de la fonction updateLigneFraisForfait pour ligne_frais_forfait
+                updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $nuit);
+        } elseif ($description == "etape" && $etape != 0) {
+            $montant_valide = $montant_valide + $etape * $montant;
+                // Appel de la fonction updateLigneFraisForfait pour ligne_frais_forfait
+                updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $etape);
+        } elseif ($description == "kilométrage" && $kilometre != 0) {
+            $montant_valide = $montant_valide + $kilometre * $montant;
+                // Appel de la fonction updateLigneFraisForfait pour ligne_frais_forfait
+                updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $kilometre);
+        }
+    }
+
+    // Appel de la fonction updateFicheFrais
+    updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide);
 
     // Function pour mettre les valeur dans la fiche
     function updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide) {
@@ -74,5 +76,20 @@
 
         // Envoie de la requête
         $db->exec($updateSQL);
+    }
+
+    function updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $quantite) {
+        // Vérifier si l'entrée existe
+        $selectSQL = "SELECT quantite FROM ligne_frais_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND id_frais = $id_frais";
+        $result = $db->query($selectSQL);
+        $ligne = $result->fetch();
+    
+        if ($ligne) {
+            $updateSQL = "UPDATE ligne_frais_forfait SET quantite = quantite + $quantite WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND id_frais = $id_frais";
+            $db->exec($updateSQL);
+        } else {
+            $insertSQL = "INSERT INTO ligne_frais_forfait (id_utilisateur, mois, annee, id_frais, quantite) VALUES ($id_utilisateur, $mois, $annee, $id_frais, $quantite)";
+            $db->exec($insertSQL);
+        }
     }
 ?>
