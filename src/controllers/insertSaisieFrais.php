@@ -9,8 +9,33 @@
     $repas = (int) ($_POST["FRA_REPAS"] ?? 0); // Mettre 0 si aucune valeur
     $nuit = (int) ($_POST["FRA_NUIT"] ?? 0); // Mettre 0 si aucune valeur
     $etape = (int) ($_POST["FRA_ETAP"] ?? 0); // Mettre 0 si aucune valeur
-    $kilometre = (int) ($_POST["FRA_KM"] ?? 0); // Mettre 0 si aucune valeur
+    $kilometre = (int) ($_POST["FRA_KM"] ?? 0); // Mettre 0 si aucune valeur //////////////// A SUPPRIMER SI BESOIN /////////////
     $montant_valide = 0;
+
+    // Vérification des données et mise en forme
+    if (!preg_match("/^\d{2}$/", $mois) || $mois < 1 || $mois > 12) {
+        die("Le mois doit être compris entre 01 et 12.");
+    }
+
+    if (!preg_match("/^\d{4}$/", $annee)) {
+        die("Le format de l'année n'est pas correct.");
+    }
+
+    if ($repas < 0 || !is_int($repas)) {
+        die("Le nombre de repas doit être positif.");
+    }
+
+    if ($nuit < 0 || !is_int($nuit)) {
+        die("Le nombre de nuit doit être positif.");
+    }
+
+    if ($etape < 0 || !is_int($etape)) {
+        die("Le nombre d'étapes doit être positif.");
+    }
+
+    if ($kilometre < 0 || !is_int($kilometre)) {
+        die("Le nombre de kilomètres doit être positif.");
+    }
 
     // Calcul du nombre de justificatifs
     $nombre_justificatifs = $repas + $nuit + $etape;
