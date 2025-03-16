@@ -6,10 +6,10 @@
     $id_utilisateur = 1; ////// A MODIFIER ////// avec les cookie de l'utilisateur connecté
     $mois = $_POST["FRA_MOIS"];
     $annee = $_POST["FRA_AN"];
-    $repas = (int) ($_POST["FRA_REPAS"] ?? 0); // Mettre si aucune valeur
-    $nuit = (int) ($_POST["FRA_NUIT"] ?? 0); // Mettre si aucune valeur
-    $etape = (int) ($_POST["FRA_ETAP"] ?? 0); // Mettre si aucune valeur
-    $kilometre = (int) ($_POST["FRA_KM"] ?? 0); // Mettre si aucune valeur
+    $repas = (int) ($_POST["FRA_REPAS"] ?? 0); // Mettre 0 si aucune valeur
+    $nuit = (int) ($_POST["FRA_NUIT"] ?? 0); // Mettre 0 si aucune valeur
+    $etape = (int) ($_POST["FRA_ETAP"] ?? 0); // Mettre 0 si aucune valeur
+    $kilometre = (int) ($_POST["FRA_KM"] ?? 0); // Mettre 0 si aucune valeur
     $montant_valide = 0;
 
     // Calcul du nombre de justificatifs
@@ -69,7 +69,7 @@
     // Appel de la fonction updateFicheFrais
     updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide);
 
-    // Function pour mettre les valeur dans la fiche
+    // Fonction pour mettre les valeur dans la fiche
     function updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide) {
         // Mise à jour de la requête SQL
         $updateSQL = "UPDATE fiche_frais SET nombre_justificatifs = nombre_justificatifs + $nombre_justificatifs, montant_valide = montant_valide + $montant_valide, date_modification = current_timestamp() WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
@@ -78,12 +78,18 @@
         $db->exec($updateSQL);
     }
 
+    // Fonction pour mettre les valeur dans la ligne_frais_forfait
     function updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $quantite) {
-        // Vérifier si l'entrée existe
+        // Écriture de la requête SQL
         $selectSQL = "SELECT quantite FROM ligne_frais_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND id_frais = $id_frais";
+
+        // Envoie de la requête, stockage dans $result
         $result = $db->query($selectSQL);
+
+        // Stockage du résultat dans un tableau
         $ligne = $result->fetch();
     
+        // Vérifier si il y a déjà des valeurs
         if ($ligne) {
             $updateSQL = "UPDATE ligne_frais_forfait SET quantite = quantite + $quantite WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND id_frais = $id_frais";
             $db->exec($updateSQL);
