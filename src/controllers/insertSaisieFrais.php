@@ -6,10 +6,10 @@
     $id_utilisateur = 1; ////// A MODIFIER ////// avec les cookie de l'utilisateur connecté
     $mois = $_POST["FRA_MOIS"];
     $annee = $_POST["FRA_AN"];
-    $repas = (int) ($_POST["FRA_REPAS"] ?? 0); // Mettre 0 si aucune valeur
-    $nuit = (int) ($_POST["FRA_NUIT"] ?? 0); // Mettre 0 si aucune valeur
-    $etape = (int) ($_POST["FRA_ETAP"] ?? 0); // Mettre 0 si aucune valeur
-    $kilometre = (int) ($_POST["FRA_KM"] ?? 0); // Mettre 0 si aucune valeur //////////////// A SUPPRIMER SI BESOIN /////////////
+    $repas = !empty($_POST["FRA_REPAS"]) ? $_POST["FRA_REPAS"] : 0; // Mettre 0 si aucune valeur
+    $nuit = !empty($_POST["FRA_NUIT"]) ? $_POST["FRA_NUIT"] : 0; // Mettre 0 si aucune valeur
+    $etape = !empty($_POST["FRA_ETAP"]) ? $_POST["FRA_ETAP"] : 0; // Mettre 0 si aucune valeur
+    $kilometre = !empty($_POST["FRA_KM"]) ? $_POST["FRA_KM"] : 0; // Mettre 0 si aucune valeur
     $montant_valide = 0;
 
     // Vérification des données et mise en forme
@@ -21,20 +21,20 @@
         die("Le format de l'année n'est pas correct.");
     }
 
-    if ($repas < 0 || !is_int($repas)) {
+    if (!is_numeric($repas) || $repas < 0) {
         die("Le nombre de repas doit être positif.");
     }
 
-    if ($nuit < 0 || !is_int($nuit)) {
+    if (!is_numeric($nuit) || $nuit < 0) {
         die("Le nombre de nuit doit être positif.");
     }
 
-    if ($etape < 0 || !is_int($etape)) {
-        die("Le nombre d'étapes doit être positif.");
+    if (!is_numeric($etape) || $etape < 0) {
+        die("Le nombre d'etape' doit être positif.");
     }
 
-    if ($kilometre < 0 || !is_int($kilometre)) {
-        die("Le nombre de kilomètres doit être positif.");
+    if (!is_numeric($kilometre) || $kilometre < 0) {
+        die("Le nombre de kilometre doit être positif.");
     }
 
     // Calcul du nombre de justificatifs
