@@ -11,6 +11,9 @@
     $etape = !empty($_POST["FRA_ETAP"]) ? $_POST["FRA_ETAP"] : 0; // Mettre 0 si aucune valeur
     $kilometre = !empty($_POST["FRA_KM"]) ? $_POST["FRA_KM"] : 0; // Mettre 0 si aucune valeur
     $montant_valide = 0;
+    $nombre_justificatifs = 0;
+
+    $mois = str_pad($mois, 2, "0", STR_PAD_LEFT);
 
     // Vérification des données et mise en forme
     if (!preg_match("/^\d{2}$/", $mois) || $mois < 1 || $mois > 12) {
@@ -36,9 +39,6 @@
     if (!is_numeric($kilometre) || $kilometre < 0) {
         die("Le nombre de kilometre doit être positif.");
     }
-
-    // Calcul du nombre de justificatifs
-    $nombre_justificatifs = $repas + $nuit + $etape;
 
     // Écriture de la requête SQL
     $selectForfaitSQL = "SELECT id_frais, montant, description FROM frais_forfait";
@@ -66,7 +66,7 @@
 
     // Effectuer le traitement sur chaque frais forfait
     foreach ($resultForfait as $ligneForfait) {
-        // // Récupération les données de la table frais_forfait
+        // Récupération les données de la table frais_forfait
         $id_frais = $ligneForfait['id_frais'];
         $montant = $ligneForfait['montant'];
         $description = $ligneForfait['description'];

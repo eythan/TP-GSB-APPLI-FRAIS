@@ -1,0 +1,63 @@
+<html>
+<head>
+	<title>connexion</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+	<script type="text/javascript"> 
+		function verifChamps()
+		{
+			if (document.getElementById('nom').value=='' 
+			|| document.getElementById('mdp').value=='') 
+
+			{
+				alert("Remplir tous les champs");
+				return false;
+			}
+			return true;
+		}
+	</script>
+
+
+
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#CC0000">
+<div align="center">
+  <p><font face="Comic Sans MS" color="#000066" size="4">Pour pouvoir acc&eacute;der
+    &agrave; certaines parties du site il est n&eacute;cessaire de vous identifier.</font></p> 
+  <p><img src="images/logoadmove.gif" width="168" height="148"></p>
+
+  <form method="post" action="identification.php" name="identification" onSubmit="return verifChamps()">
+    <table width="49%" border="0" cellspacing="2" bgcolor="#FFFFFF" bordercolor="#FFFFFF">
+      <tr>
+			<td width="53%"><font face="Comic Sans MS" size="3" color="#000099">Votre
+			  nom :</font></td>
+			<td width="47%">
+			  <input type="text" name="nom" id="nom" size="25" maxlength="25">
+			</td>
+      </tr>
+      <tr>
+			<td width="53%"><font face="Comic Sans MS" size="3" color="#000099">Votre
+			  mot de passe :</font></td>
+			<td width="47%">
+			  <input type="password" name="mdp" id="mdp" size="8" maxlength="8">
+			</td>
+      </tr>
+    </table>
+    <div align="center">
+      <p> <font face="Comic Sans MS">
+        <input type="submit" name="validation" value="Demande de connexion"> </font></p>
+<BR><BR><BR>
+
+
+	  <p><font face="Comic Sans MS" color="#33CC99"><font color="#000066" size="4">Si
+        vous &ecirc;tes nouvel utilisateur vous devez</font></font><font face="Comic Sans MS" color="#000066" size="4">
+        remplir le <a href="formulaireInscription.html">formulaire d'inscription</a>.</font>
+      </p>
+    </div>
+  </form>
+  </div>
+
+</body>
+</html>

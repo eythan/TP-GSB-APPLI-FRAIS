@@ -25,8 +25,8 @@
             <div id="content">
                 <form name="formSaisieFrais" method="post" action="../../src/controllers/insertSaisieFrais.php">
                     <h2>Périodes</h2>
-                    <label>Mois :</label><input type="text" name="FRA_MOIS" class="zone" placeholder="Mois" required>
-                    <label>Année :</label><input type="text" name="FRA_AN" class="zone" placeholder="Année" required>
+                    <label>Mois :</label><input type="number" name="FRA_MOIS" class="zone" min="1" max="12" placeholder="Mois" required>
+                    <label>Année :</label><input type="number" name="FRA_AN" class="zone" min="2000" max="2100" placeholder="Année" required>
                     <br></br>
 
                     <h2>Frais forfaitaires</h2>
