@@ -1,25 +1,18 @@
 <?php
     if ($_POST) {
         $mail=$_POST["mail"];
-        echo $mail.'<br>';
 
         $password=$_POST["password"];
-        echo $password.'<br>';
 
         $lastname=$_POST["lastname"];
-        echo $lastname.'<br>';
 
         $firstname=$_POST["firstname"];
-        echo $firstname.'<br>';
 
         $address=$_POST["address"];
-        echo $address.'<br>';
 
         $postal=$_POST["postal"];
-        echo $postal.'<br>';
 
         $city=$_POST["city"];
-        echo $city.'<br>';
 
         header('Location: ../html/formSaisieFrais.php');
     }
