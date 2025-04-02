@@ -17,6 +17,8 @@
                 <a href="#">Consultation des frais</a>
                 <a href="#">Gestion des frais</a>
             </div>
+            <div class="user">Bonjour Sébastien</div>
+            <a href="deconnexion.php" class="logout">Déconnexion</a>
         </div>
         <div class="content">
             <div id="haut">

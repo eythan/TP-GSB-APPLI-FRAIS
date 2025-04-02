@@ -9,25 +9,28 @@
 
         // Vérifié les champs vides
         if (empty($mail) || empty($password)) {
-            die("Il y a un champ vide");
-        }
-
-        // Hachage du mot de passe
-        $securePassword = hash('sha256', $password);
-
-        // Écriture de la requête SQL
-        $selectSQL = "SELECT * FROM utilisateurs WHERE email = '$mail' AND mot_de_passe = '$securePassword'";
-
-        // Envoie de la requête
-        $result = $db->query($selectSQL);
-
-        // Vérifié le résultat dans la base de données
-        if ($result->rowCount() == 1) {
-            // Connexion reussie
-            header("Location: /html/formSaisieFrais.php");
+            $errorMessage = "Il y a un champ vide";
+        // Vérifié le format de l'email
+        } elseif (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+            $errorMessage = "Email invalide";
         } else {
-            // Erreur de connexion
-            $errorMessage = "Vérifier votre email et mot de passe";
+            // Hachage du mot de passe
+            $securePassword = hash('sha256', $password);
+
+            // Écriture de la requête SQL
+            $selectSQL = "SELECT * FROM utilisateurs WHERE email = '$mail' AND mot_de_passe = '$securePassword'";
+
+            // Envoie de la requête
+            $result = $db->query($selectSQL);
+
+            // Vérifié le résultat dans la base de données
+            if ($result->rowCount() == 1) {
+                // Connexion reussie
+                header("Location: /html/formSaisieFrais.php");
+            } else {
+                // Erreur de connexion
+                $errorMessage = "Vérifier votre email et mot de passe";
+            }
         }
     }
 ?>

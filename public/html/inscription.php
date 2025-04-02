@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     if ($_POST) {
         // Script de connexion BDD
         include("../../src/includes/database.php");
@@ -14,19 +16,25 @@
 
         // Vérifié les champs vides
         if (empty($mail) || empty($password) || empty($lastname) || empty($firstname) || empty($address) || empty($postal) || empty($city)) {
-            die("Il y a un champ vide");
+            $errorMessage = "Il y a un champ vide";
+        // Vérifié le format de l'email
+        } elseif (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+            $errorMessage = "Email invalide";
+        } else {
+            // Hachage du mot de passe
+            $securePassword = hash('sha256', $password);
+
+            // Écriture de la requête SQL
+            $insertSQL = "INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, adresse, code_postal, ville) VALUES ('$lastname', '$firstname', '$mail', '$securePassword', 'visiteur', '$address', '$postal', '$city')";
+
+            // Envoie de la requête
+            $db->exec($insertSQL);
+
+            $_SESSION["user_email"] = $mail;
+            $_SESSION["user_role"] = $role;
+
+            header("Location: profil.php");
         }
-
-        // Hachage du mot de passe
-        $securePassword = hash('sha256', $password);
-
-        // Écriture de la requête SQL
-        $insertSQL = "INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, adresse, code_postal, ville) VALUES ('$lastname', '$firstname', '$mail', '$securePassword', 'visiteur', '$address', '$postal', '$city')";
-
-        // Envoie de la requête
-        $db->exec($insertSQL);
-
-        header("Location: ../index.php");
     }
 ?>
 
@@ -50,7 +58,7 @@
 
                 <label for="mail">Email</label>
 
-                <input type="text" id="mail" name="mail" class="zone" placeholder="Votre email" required>
+                <input type="text" id="mail" name="mail" class="zone" placeholder="Votre email">
 
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" class="zone" placeholder="Votre mot de passe" required>
@@ -75,7 +83,13 @@
 
                 <input type="text" id="city" name="city" class="zone" placeholder="Votre ville" required>
 
-                <br><br>
+                <br>
+                <?php 
+                    if (!empty($errorMessage)) {
+                        echo '<label for="error" style="color: red;">'.$errorMessage.'</label>';
+                    }
+                ?>
+                <br>
                 <input type="submit" value="Créer un compte" class="zone">
             </form>
             <br>
