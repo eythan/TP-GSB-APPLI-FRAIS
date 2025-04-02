@@ -1,3 +1,24 @@
+<?php
+    session_start();
+
+    if (!isset($_SESSION["user_email"])) {
+        header("location: ../index.php");
+    }
+
+    if ($_SESSION["user_role"] != "visiteur" && $_SESSION["user_role"] != "comptable") {
+        header("location: ../index.php");
+        exit();
+    }
+
+    if (isset($_SESSION["errorMessage"])) {
+        $errorMessage = $_SESSION["errorMessage"];
+        unset($_SESSION["errorMessage"]);
+    }
+    
+    $role = $_SESSION["user_role"];
+    $username = $_SESSION["username"];
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -13,12 +34,17 @@
         <div class="sidebar">
             <img src="../assets/images/logo.png" alt="Logo">
             <div class="menu">
-                <a href="#">Création de frais</a>
-                <a href="#">Consultation des frais</a>
-                <a href="#">Gestion des frais</a>
+                <?php if ($role == "visiteur") { ?>
+                    <a href="#">Création de frais</a>
+                    <a href="#">Consultation des frais</a>
+                <?php } else { ?>
+                    <a href="#">Création de frais</a>
+                    <a href="#">Consultation des frais</a>
+                    <a href="#">Gestion des frais</a>
+                <?php } ?>
             </div>
-            <div class="user">Bonjour Sébastien</div>
-            <a href="deconnexion.php" class="logout">Déconnexion</a>
+            <div class="user">Bonjour <?php echo $username; ?></div>
+            <a href="../../src/controllers/deconnexion.php" class="logout">Déconnexion</a>
         </div>
         <div class="content">
             <div id="haut">
@@ -27,7 +53,7 @@
             <div id="content">
                 <form name="formSaisieFrais" method="post" action="../../src/controllers/insertSaisieFrais.php">
                     <h2>Périodes</h2>
-                    <label>Mois :</label><input type="number" name="FRA_MOIS" class="zone" min="1" max="12" placeholder="Mois" required>
+                    <label>Mois :</label><input type="text" name="FRA_MOIS" class="zone" min="1" max="12" placeholder="Mois" required>
                     <label>Année :</label><input type="number" name="FRA_AN" class="zone" min="2000" max="2100" placeholder="Année" required>
                     <br></br>
 
@@ -46,7 +72,13 @@
                         <input type="number" name="FRA_AUT_MONT1" class="zone" placeholder="Montant">
                         <input type="button" id="but1" value="+" onclick="ajoutLigne(1);" class="zone">
                     </div>
-                    <br></br>
+                    <br>
+                    <?php 
+                        if (!empty($errorMessage)) {
+                            echo '<label for="error" style="color: red; display: block; text-align: center;">'.$errorMessage.'</label>';
+                        }
+                    ?>
+                    </br>
                     <input type="reset" class="zone">
                     <input type="submit" class="zone">
                 </form>

@@ -1,43 +1,11 @@
 <?php
     session_start();
-
-    if ($_POST) {
-        // Script de connexion BDD
-        include("../../src/includes/database.php");
-
-        // Récupération des données du formulaire
-        $mail=$_POST["mail"];
-        $password=$_POST["password"];
-        $lastname=$_POST["lastname"];
-        $firstname=$_POST["firstname"];
-        $address=$_POST["address"];
-        $postal=$_POST["postal"];
-        $city=$_POST["city"];
-
-        // Vérifié les champs vides
-        if (empty($mail) || empty($password) || empty($lastname) || empty($firstname) || empty($address) || empty($postal) || empty($city)) {
-            $errorMessage = "Il y a un champ vide";
-        // Vérifié le format de l'email
-        } elseif (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-            $errorMessage = "Email invalide";
-        } else {
-            // Hachage du mot de passe
-            $securePassword = hash('sha256', $password);
-
-            // Écriture de la requête SQL
-            $insertSQL = "INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, adresse, code_postal, ville) VALUES ('$lastname', '$firstname', '$mail', '$securePassword', 'visiteur', '$address', '$postal', '$city')";
-
-            // Envoie de la requête
-            $db->exec($insertSQL);
-
-            $_SESSION["user_email"] = $mail;
-            $_SESSION["user_role"] = $role;
-
-            header("Location: profil.php");
-        }
+    
+    if (isset($_SESSION["errorMessage"])) {
+        $errorMessage = $_SESSION["errorMessage"];
+        unset($_SESSION["errorMessage"]);
     }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -45,7 +13,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
+    <title>Inscription</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 
@@ -54,7 +22,7 @@
         <div class="login-box">
             <h1>Inscription</h1>
             <br>
-            <form method="post">
+            <form method="post" action="../../src/controllers/insertinscription.php">
 
                 <label for="mail">Email</label>
 
@@ -96,7 +64,6 @@
             <a href="../index.php"><button class="bouton">Se connecter</button></a>
         </div>
     </div>
-    <script src="../js/script.js"></script>
 </body>
 
 </html>

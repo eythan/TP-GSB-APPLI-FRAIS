@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     // Script de connexion BDD
     include("../includes/database.php");
 
@@ -17,27 +19,33 @@
 
     // Vérification des données et mise en forme
     if (!preg_match("/^\d{2}$/", $mois) || $mois < 1 || $mois > 12) {
-        die("Le mois doit être compris entre 01 et 12.");
+        $_SESSION["errorMessage"] = "Le mois doit être compris entre 01 et 12.";
+        header("Location: ../../php/formSaisieFrais.php");
     }
 
     if (!preg_match("/^\d{4}$/", $annee)) {
-        die("Le format de l'année n'est pas correct.");
+        $_SESSION["errorMessage"] = "Le format de l'année n'est pas correct.";
+        header("Location: ../../php/formSaisieFrais.php");
     }
 
     if (!is_numeric($repas) || $repas < 0) {
-        die("Le nombre de repas doit être positif.");
+        $_SESSION["errorMessage"] = "Le nombre de repas doit être positif.";
+        header("Location: ../../php/formSaisieFrais.php");
     }
 
     if (!is_numeric($nuit) || $nuit < 0) {
-        die("Le nombre de nuit doit être positif.");
+        $_SESSION["errorMessage"] = "Le nombre de nuit doit être positif.";
+        header("Location: ../../php/formSaisieFrais.php");
     }
 
     if (!is_numeric($etape) || $etape < 0) {
-        die("Le nombre d'etape' doit être positif.");
+        $_SESSION["errorMessage"] = "Le nombre d'etape' doit être positif.";
+        header("Location: ../../php/formSaisieFrais.php");
     }
 
     if (!is_numeric($kilometre) || $kilometre < 0) {
-        die("Le nombre de kilometre doit être positif.");
+        $_SESSION["errorMessage"] = "Le nombre de kilometre doit être positif.";
+        header("Location: ../../php/formSaisieFrais.php");
     }
 
     // Écriture de la requête SQL
@@ -67,9 +75,9 @@
     // Effectuer le traitement sur chaque frais forfait
     foreach ($resultForfait as $ligneForfait) {
         // Récupération les données de la table frais_forfait
-        $id_frais = $ligneForfait['id_frais'];
-        $montant = $ligneForfait['montant'];
-        $description = $ligneForfait['description'];
+        $id_frais = $ligneForfait["id_frais"];
+        $montant = $ligneForfait["montant"];
+        $description = $ligneForfait["description"];
 
         // Vérifier la description et ajouter au montant valide
         if ($description == "repas" && $repas != 0) {
@@ -93,6 +101,8 @@
 
     // Appel de la fonction updateFicheFrais
     updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide);
+
+    header("Location: ../../php/formConsultationFrais.php");
 
     // Fonction pour mettre les valeur dans la fiche
     function updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide) {

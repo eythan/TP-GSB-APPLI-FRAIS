@@ -18,7 +18,7 @@
         // Effectuer le traitement sur chaque utilisateur
         foreach ($result as $ligne) {
             // Récupération de l'id de l'utilisateur
-            $id_utilisateur = $ligne['id_utilisateur'];
+            $id_utilisateur = $ligne["id_utilisateur"];
 
             // Écriture de la requête SQL
             $insertSQL = "INSERT INTO fiche_frais (id_utilisateur, mois, annee, id_etat) VALUES ($id_utilisateur, $mois, $annee, 1)";
