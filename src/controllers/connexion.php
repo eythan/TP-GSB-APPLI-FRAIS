@@ -2,7 +2,7 @@
     session_start();
 
     // Script de connexion BDD
-    include("../includes/database.php");
+    require("../includes/database.php");
 
     // Récupération des données du formulaire
     $mail = $_POST["mail"];
@@ -23,15 +23,17 @@
         // Écriture de la requête SQL
         $selectSQL = "SELECT * FROM utilisateurs WHERE email = '$mail' AND mot_de_passe = '$securePassword'";
 
-        // Envoie de la requête
+        // Envoie de la requête, stockage dans $result
         $result = $db->query($selectSQL);
 
+        // Stockage du résultat dans un tableau
         $ligne = $result->fetch();
 
         // Vérifié le résultat dans la base de données
         if ($ligne) {
-            
+            // Connexion reussie
             $_SESSION["user_email"] = $ligne["email"];
+            $_SESSION["user_id"] = $ligne["id_utilisateur"];
             $_SESSION["user_role"] = $ligne["role"];
             $_SESSION["username"] = $ligne["prenom"] . " " . $ligne["nom"];
             // Connexion reussie

@@ -1,6 +1,6 @@
 <?php
     // Script de connexion BDD
-    include("database.php");
+    require("database.php");
 
     // Récupération de la date du jour
     $datefrais = date("d");

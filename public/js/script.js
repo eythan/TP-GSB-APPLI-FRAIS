@@ -35,21 +35,3 @@ function ajoutLigne(pNumero) {
     bouton.setAttribute("onclick", "ajoutLigne(" + pNumero + ");");
     laDiv.appendChild(bouton);
 }
-
-function remplirDateActuelle() {
-    const date = new Date();
-    const mois = String(date.getMonth() + 1).padStart(2, '0');
-    const annee = date.getFullYear();
-
-    document.querySelector('input[name="FRA_MOIS"]').value = mois;
-    document.querySelector('input[name="FRA_AN"]').value = annee;
-}
-
-window.onload = remplirDateActuelle;
-
-document.addEventListener('DOMContentLoaded', function() {
-    const resetButton = document.querySelector('input[type="reset"]');
-    resetButton.addEventListener('click', function() {
-        setTimeout(remplirDateActuelle, 0);
-    });
-});

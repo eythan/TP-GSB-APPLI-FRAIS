@@ -2,7 +2,7 @@
     session_start();
 
     // Script de connexion BDD
-    include("../../src/includes/database.php");
+    require("../../src/includes/database.php");
 
     // Récupération des données du formulaire
     $mail=$_POST["mail"];

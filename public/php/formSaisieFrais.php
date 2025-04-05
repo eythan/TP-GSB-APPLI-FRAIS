@@ -7,7 +7,11 @@
 
     if ($_SESSION["user_role"] != "visiteur" && $_SESSION["user_role"] != "comptable") {
         header("location: ../index.php");
-        exit();
+    }
+
+    if (isset($_SESSION["errorDate"])) {
+        $errorDate = $_SESSION["errorDate"];
+        unset($_SESSION["errorDate"]);
     }
 
     if (isset($_SESSION["errorMessage"])) {
@@ -17,6 +21,14 @@
     
     $role = $_SESSION["user_role"];
     $username = $_SESSION["username"];
+
+    if (isset($_SESSION["FRA_MOIS"]) && isset($_SESSION["FRA_AN"])) {
+        $mois = $_SESSION["FRA_MOIS"];
+        $annee = $_SESSION["FRA_AN"];
+    } else {
+        $mois = date("m");
+        $annee = date("Y");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -34,12 +46,9 @@
         <div class="sidebar">
             <img src="../assets/images/logo.png" alt="Logo">
             <div class="menu">
-                <?php if ($role == "visiteur") { ?>
-                    <a href="#">Création de frais</a>
-                    <a href="#">Consultation des frais</a>
-                <?php } else { ?>
-                    <a href="#">Création de frais</a>
-                    <a href="#">Consultation des frais</a>
+                <a href="#">Création de frais</a>
+                <a href="#">Consultation des frais</a>
+                <?php if ($role == "comptable") { ?>
                     <a href="#">Gestion des frais</a>
                 <?php } ?>
             </div>
@@ -51,17 +60,26 @@
                 <h1>Création de frais</h1>
             </div>
             <div id="content">
-                <form name="formSaisieFrais" method="post" action="../../src/controllers/insertSaisieFrais.php">
+                <form name="formPeriode" method="post" action="../../src/controllers/insertSaisieFrais.php">
                     <h2>Périodes</h2>
-                    <label>Mois :</label><input type="text" name="FRA_MOIS" class="zone" min="1" max="12" placeholder="Mois" required>
-                    <label>Année :</label><input type="number" name="FRA_AN" class="zone" min="2000" max="2100" placeholder="Année" required>
-                    <br></br>
+                    <label>Mois :</label><input type="number" name="FRA_MOIS" class="zone" min="1" max="12" placeholder="Mois" value="<?php echo $mois; ?>" required>
+                    <label>Année :</label><input type="number" name="FRA_AN" class="zone" min="2000" max="2100" placeholder="Année" value="<?php echo $annee; ?>" required>
+                    <input type="submit" value="Valider la période" class="zone">
+                    <br>
+                        <?php 
+                            if (!empty($errorDate)) {
+                                echo '<label for="error" style="color: red; display: block; text-align: center;">'.$errorDate.'</label>';
+                            }
+                        ?>
+                    </br>
+                </form>
 
+                <form name="formSaisieFrais" method="post" action="../../src/controllers/insertSaisieFrais.php">
                     <h2>Frais forfaitaires</h2>
-                    <label class="titre">Repas :</label><input type="number" name="FRA_REPAS" class="zone" min="0" max="999999" placeholder="Nombre de repas">
-                    <label class="titre">Nuitées :</label><input type="number" name="FRA_NUIT" class="zone" min="0" max="999999" placeholder="Nombre de nuitées">
-                    <label class="titre">Étape :</label><input type="number" name="FRA_ETAP" class="zone" min="0" max="999999" placeholder="Nombre d'étapes">
-                    <label class="titre">Km :</label><input type="number" name="FRA_KM" class="zone" min="0" max="999999" placeholder="Distance en km">
+                    <label class="titre">Repas :</label><input type="number" name="FRA_REPAS" class="zone" min="0" max="999999" placeholder="Nombre de repas" value="<?php echo isset($_SESSION['repas']) ? $_SESSION['repas'] : '0'; ?>">
+                    <label class="titre">Nuitées :</label><input type="number" name="FRA_NUIT" class="zone" min="0" max="999999" placeholder="Nombre de nuitées" value="<?php echo isset($_SESSION['nuit']) ? $_SESSION['nuit'] : '0'; ?>">
+                    <label class="titre">Étape :</label><input type="number" name="FRA_ETAP" class="zone" min="0" max="999999" placeholder="Nombre d'étapes" value="<?php echo isset($_SESSION['etape']) ? $_SESSION['etape'] : '0'; ?>">
+                    <label class="titre">Km :</label><input type="number" name="FRA_KM" class="zone" min="0" max="999999" placeholder="Distance en km" value="<?php echo isset($_SESSION['kilometre']) ? $_SESSION['kilometre'] : '0'; ?>">
                     <br></br>
 
                     <h2>Frais supplémentaires</h2>

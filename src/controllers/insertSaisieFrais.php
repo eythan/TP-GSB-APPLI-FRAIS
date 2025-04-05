@@ -2,29 +2,46 @@
     session_start();
 
     // Script de connexion BDD
-    include("../includes/database.php");
+    require("../includes/database.php");
+
+    // Vérifié si l'utilisateur est connecté
+    if (!isset($_SESSION["user_email"])) {
+        header("location: ../index.php");
+    }
+
+    // Vérifié si l'utilisateur est un visiteur ou un comptable
+    if ($_SESSION["user_role"] != "visiteur" && $_SESSION["user_role"] != "comptable") {
+        header("location: ../index.php");
+    }
 
     // Récupération des données du formulaire
-    $id_utilisateur = 1; ////// A MODIFIER ////// avec les cookie de l'utilisateur connecté
-    $mois = $_POST["FRA_MOIS"];
-    $annee = $_POST["FRA_AN"];
-    $repas = !empty($_POST["FRA_REPAS"]) ? $_POST["FRA_REPAS"] : 0; // Mettre 0 si aucune valeur
-    $nuit = !empty($_POST["FRA_NUIT"]) ? $_POST["FRA_NUIT"] : 0; // Mettre 0 si aucune valeur
-    $etape = !empty($_POST["FRA_ETAP"]) ? $_POST["FRA_ETAP"] : 0; // Mettre 0 si aucune valeur
-    $kilometre = !empty($_POST["FRA_KM"]) ? $_POST["FRA_KM"] : 0; // Mettre 0 si aucune valeur
+    if (isset($_POST["FRA_MOIS"]) && isset($_POST["FRA_AN"])) {
+        $mois = $_POST["FRA_MOIS"];
+        $annee = $_POST["FRA_AN"];
+        $_SESSION["FRA_MOIS"] = $mois; 
+        $_SESSION["FRA_AN"] = $annee;
+        header("Location: ../../php/formSaisieFrais.php");
+    }
+
+    // Récupération des données du formulaire
+    $mois = $_SESSION["FRA_MOIS"];
+    $annee = $_SESSION["FRA_AN"];
+    $repas = $_POST["FRA_REPAS"];
+    $nuit = $_POST["FRA_NUIT"];
+    $etape = $_POST["FRA_ETAP"];
+    $kilometre = $_POST["FRA_KM"];
     $montant_valide = 0;
-    $nombre_justificatifs = 0;
+    $nombre_justificatifs = 5;
 
-    $mois = str_pad($mois, 2, "0", STR_PAD_LEFT);
-
+    
     // Vérification des données et mise en forme
     if (!preg_match("/^\d{2}$/", $mois) || $mois < 1 || $mois > 12) {
-        $_SESSION["errorMessage"] = "Le mois doit être compris entre 01 et 12.";
+        $_SESSION["errorDate"] = "Le mois doit être compris entre 01 et 12.";
         header("Location: ../../php/formSaisieFrais.php");
     }
 
     if (!preg_match("/^\d{4}$/", $annee)) {
-        $_SESSION["errorMessage"] = "Le format de l'année n'est pas correct.";
+        $_SESSION["errorDate"] = "Le format de l'année n'est pas correct.";
         header("Location: ../../php/formSaisieFrais.php");
     }
 
@@ -46,6 +63,38 @@
     if (!is_numeric($kilometre) || $kilometre < 0) {
         $_SESSION["errorMessage"] = "Le nombre de kilometre doit être positif.";
         header("Location: ../../php/formSaisieFrais.php");
+    }
+
+    // Récuperer l'ID de l'utilisateur
+    $id_utilisateur = $_SESSION["user_id"];
+
+    // Mettre un 0 devant si besoin
+    $mois = str_pad($mois, 2, "0", STR_PAD_LEFT);
+    
+    // Écriture de la requête SQL
+    $selectSQL = "SELECT id_frais, quantite FROM ligne_frais_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
+
+    // Envoie de la requête, stockage dans $result
+    $result = $db->query($selectSQL);
+
+    $_SESSION["repas"] = 0;
+    $_SESSION["nuit"] = 0;
+    $_SESSION["etape"] = 0;
+    $_SESSION["kilometre"] = 0;
+
+    while ($ligne = $result->fetch()) {
+        $id_frais = $ligne["id_frais"];
+        $quantite = $ligne["quantite"];
+
+        if ($id_frais == 1) {
+            $_SESSION["repas"] = $quantite;
+        } elseif ($id_frais == 2) {
+            $_SESSION["nuit"] = $quantite;
+        } elseif ($id_frais == 3) {
+            $_SESSION["etape"] = $quantite;
+        } elseif ($id_frais == 4) {
+            $_SESSION["kilometre"] = $quantite;
+        }
     }
 
     // Écriture de la requête SQL
@@ -102,7 +151,9 @@
     // Appel de la fonction updateFicheFrais
     updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide);
 
-    header("Location: ../../php/formConsultationFrais.php");
+    $_SESSION["errorDate"] = "";
+    $_SESSION["errorMessage"] = "";
+    header("Location: ../../php/formSaisieFrais.php");
 
     // Fonction pour mettre les valeur dans la fiche
     function updateFicheFrais($db, $id_utilisateur, $mois, $annee, $nombre_justificatifs, $montant_valide) {
@@ -126,7 +177,7 @@
     
         // Vérifier si il y a déjà des valeurs
         if ($ligne) {
-            $updateSQL = "UPDATE ligne_frais_forfait SET quantite = quantite + $quantite WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND id_frais = $id_frais";
+            $updateSQL = "UPDATE ligne_frais_forfait SET quantite = $quantite WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND id_frais = $id_frais";
             $db->exec($updateSQL);
         } else {
             $insertSQL = "INSERT INTO ligne_frais_forfait (id_utilisateur, mois, annee, id_frais, quantite) VALUES ($id_utilisateur, $mois, $annee, $id_frais, $quantite)";
