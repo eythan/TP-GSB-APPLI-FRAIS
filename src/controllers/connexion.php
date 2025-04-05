@@ -42,7 +42,8 @@
             // Erreur de connexion
             $_SESSION["errorMessage"] = "Vérifier votre email et mot de passe";
             header("Location: ../../index.php");
-            exit();
         }
     }
+
+    exit();
 ?>

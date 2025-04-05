@@ -37,4 +37,6 @@
 
         header("Location: ../../php/formSaisieFrais.php");
     }
+
+    exit();
 ?>
