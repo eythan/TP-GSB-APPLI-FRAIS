@@ -22,7 +22,7 @@
         <div class="login-box">
             <h1>Connexion</h1>
             <br>
-            <form method="post" action="../src/controllers/connexion.php">
+            <form method="post" action="../src/controllers/check-login.php">
                 <label for="mail">Email</label>
 
                 <input type="text" id="mail" name="mail" class="zone" placeholder="Votre email" required>
@@ -40,7 +40,7 @@
                 <input type="submit" value="Se connecter" class="zone">
             </form>
             <br>
-            <a href="php/inscription.php"><button class="bouton">Créez un compte</button></a>
+            <a href="php/registration.php"><button class="bouton">Créez un compte</button></a>
         </div>
     </div>
 </body>

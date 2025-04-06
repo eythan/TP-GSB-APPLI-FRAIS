@@ -1,6 +1,18 @@
 <?php
-    // Script de connexion BDD
-    require("database.php");
+    session_start();
+    require("../includes/database.php");
+
+    // Vérifié si l'utilisateur est connecté
+    if (!isset($_SESSION["user_email"])) {
+        header("location: ../index.php");
+        exit();
+    }
+
+    // Vérifié si l'utilisateur est un visiteur ou un comptable
+    if ($_SESSION["user_role"] != "Visiteur médical" && $_SESSION["user_role"] != "Comptable") {
+        header("location: ../index.php");
+        exit();
+    }
 
     // Récupération de la date du jour
     $datefrais = date("d");
