@@ -10,7 +10,7 @@
     }
 
     // Vérifié si l'utilisateur est un visiteur ou un comptable
-    if ($_SESSION["user_role"] != "visiteur" && $_SESSION["user_role"] != "comptable") {
+    if ($_SESSION["user_role"] != "Visiteur médical" && $_SESSION["user_role"] != "Comptable") {
         header("location: ../index.php");
     }
 
@@ -62,6 +62,13 @@
             } elseif ($id_frais == 4) {
                 $_SESSION["kilometre"] = $quantite;
             }
+        }
+
+        $selectHorsForfaitSQL = "SELECT id_hors_forfait, date_frais, montant, description FROM ligne_frais_hors_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
+        $result = $db->query($selectHorsForfaitSQL);
+
+        while ($ligne = $result->fetch()) {
+            $_SESSION["frais_hors_forfait"][] = $ligne;
         }
 
         header("Location: ../../php/formSaisieFrais.php");
@@ -147,6 +154,41 @@
             }
         }
 
+        $i = 1;
+        while (isset($_POST["FRA_AUT_DAT".$i]) && isset($_POST["FRA_AUT_LIB".$i]) && isset($_POST["FRA_AUT_MONT".$i])) {
+            $date = $_POST["FRA_AUT_DAT".$i];
+            $libelle = $_POST["FRA_AUT_LIB".$i];
+            $montant = $_POST["FRA_AUT_MONT".$i];
+        
+            if (empty($date) || empty($libelle) || empty($montant)) {
+                $_SESSION["errorMessage"] = "Tous les champs des frais hors forfait doivent être renseignés.";
+                header("Location: ../../php/formSaisieFrais.php");
+                exit();
+            }
+        
+            if (!is_numeric($montant) || $montant < 0) {
+                $_SESSION["errorMessage"] = "Le montant doit être un nombre positif.";
+                header("Location: ../../php/formSaisieFrais.php");
+                exit();
+            }
+        
+            if (!(DateTime::createFromFormat('Y-m-d', $date) && DateTime::createFromFormat('Y-m-d', $date)->format('Y-m-d') === $date)) {
+                $_SESSION["errorMessage"] = "La date d'engagement doit être valide.";
+                header("Location: ../../php/formSaisieFrais.php");
+                exit();
+            }
+        
+            if (strtotime($date) < strtotime('-1 year')) {
+                $_SESSION["errorMessage"] = "La date d'engagement doit se situer dans l’année écoulée.";
+                header("Location: ../../php/formSaisieFrais.php");
+                exit();
+            }
+        
+            updateLigneFraisHorsForfait($db, $id_utilisateur, $mois, $annee, $date, $libelle, $montant);
+        
+            $i++;
+        }
+
         $updateSQL = "UPDATE fiche_frais SET date_modification = current_timestamp() WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
 
         // Envoie de la requête
@@ -161,6 +203,27 @@
         $_SESSION["kilometre"] = $kilometre;
         header("Location: ../../php/formSaisieFrais.php");
         exit();
+    }
+
+    // Fonction pour mettre les valeur dans la ligne_frais_hors_forfait
+    function updateLigneFraisHorsForfait($db, $id_utilisateur, $mois, $annee, $date, $libelle, $montant) {
+        // Écriture de la requête SQL
+        $selectSQL = "SELECT id_hors_forfait FROM ligne_frais_hors_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND description = '$libelle' AND montant = $montant";
+    
+        // Envoie de la requête, stockage dans $result
+        $result = $db->query($selectSQL);
+    
+        // Stockage du résultat dans un tableau
+        $ligne = $result->fetch();
+    
+        // Vérifier si il y a déjà des valeurs
+        if ($ligne) {
+            $updateSQL = "UPDATE ligne_frais_hors_forfait SET montant = $montant, description = '$libelle' WHERE id_hors_forfait = ".$ligne['id_hors_forfait'];
+            $db->exec($updateSQL);
+        } else {
+            $insertSQL = "INSERT INTO ligne_frais_hors_forfait (id_utilisateur, mois, annee, date_frais, montant, description) VALUES ($id_utilisateur, $mois, $annee, '$date', $montant, '$libelle')";
+            $db->exec($insertSQL);
+        }
     }
 
     // Fonction pour mettre les valeur dans la ligne_frais_forfait

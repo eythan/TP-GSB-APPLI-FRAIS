@@ -5,7 +5,7 @@
         header("location: ../index.php");
     }
 
-    if ($_SESSION["user_role"] != "visiteur" && $_SESSION["user_role"] != "comptable") {
+    if ($_SESSION["user_role"] != "Visiteur médical" && $_SESSION["user_role"] != "Comptable") {
         header("location: ../index.php");
     }
 
@@ -84,10 +84,26 @@
 
                     <h2>Frais supplémentaires</h2>
                     <div id="lignes">
-                        <label class="titre">Frais numéro 1</label>
-                        <input type="date" name="FRA_AUT_DAT1" class="zone" placeholder="Date">
-                        <input type="texte" name="FRA_AUT_LIB1" class="zone" placeholder="Libellé">
-                        <input type="number" name="FRA_AUT_MONT1" class="zone" placeholder="Montant">
+                        <?php
+                        if (isset($_SESSION["frais_hors_forfait"])) {
+                            $frais_hors_forfait = $_SESSION["frais_hors_forfait"];
+                            foreach ($frais_hors_forfait as $i => $frais) {
+                                echo '<div id="lignes">';
+                                echo '<label class="titre">Frais numéro ' . ($i + 1) . '</label>';
+                                echo '<input type="date" name="FRA_AUT_DAT' . ($i + 1) . '" class="zone" value="' . $frais['date_frais'] . '">';
+                                echo '<input type="text" name="FRA_AUT_LIB' . ($i + 1) . '" class="zone" value="' . $frais['description'] . '">';
+                                echo '<input type="number" name="FRA_AUT_MONT' . ($i + 1) . '" class="zone" value="' . $frais['montant'] . '">';
+                                echo '</div>';
+                            }
+                        } else {
+                            echo '<div id="lignes">';
+                            echo '<label class="titre">Frais numéro 1</label>';
+                            echo '<input type="date" name="FRA_AUT_DAT1" class="zone" placeholder="Date">';
+                            echo '<input type="text" name="FRA_AUT_LIB1" class="zone" placeholder="Libellé">';
+                            echo '<input type="number" name="FRA_AUT_MONT1" class="zone" placeholder="Montant">';
+                            echo '</div>';
+                        }
+                        ?>
                         <input type="button" id="but1" value="+" onclick="ajoutLigne(1);" class="zone">
                     </div>
                     <br>
