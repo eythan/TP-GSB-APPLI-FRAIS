@@ -152,9 +152,8 @@ input[type="submit"]:hover,
 
 .user {
     color: #f5f5f5;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-weight: bold;
-    border-bottom: 1px solid #2B2D31;
 }
 
 .logout {

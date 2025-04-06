@@ -35,10 +35,11 @@
         <div class="sidebar">
             <img src="../assets/images/logo.png" alt="Logo">
             <div class="menu">
-                <a href="#">Création de frais</a>
-                <a href="#">Consultation des frais</a>
+            <div class="user">Compte : <?php echo strtolower($role); ?></div>
+                <a href="expense-entry.php" style="color: #F5E1A4;">Création de frais</a>
+                <a href="consult-expenses.php">Consultation des frais</a>
                 <?php if ($role == "Comptable") { ?>
-                    <a href="#">Gestion des frais</a>
+                    <a href="manage-expenses.php">Gestion des frais</a>
                 <?php } ?>
             </div>
             <div class="user">Bonjour <?php echo $username; ?></div>

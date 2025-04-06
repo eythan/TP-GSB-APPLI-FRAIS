@@ -95,8 +95,8 @@
 
     // Récupération du formulaire de frais
     if (isset($_POST["FRA_REPAS"]) && isset($_POST["FRA_NUIT"]) && isset($_POST["FRA_ETAP"]) && isset($_POST["FRA_KM"])) {
-        $mois = $_SESSION["FRA_MOIS"];
-        $annee = $_SESSION["FRA_AN"];
+        $mois = $_SESSION["FRA_MOIS"] ?? date('m');
+        $annee = $_SESSION["FRA_AN"] ?? date('Y');
         $repas = $_POST["FRA_REPAS"];
         $nuit = $_POST["FRA_NUIT"];
         $etape = $_POST["FRA_ETAP"];
