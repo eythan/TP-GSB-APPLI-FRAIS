@@ -46,7 +46,7 @@
             <div>
             <form name="formPeriode" method="post" action="../../src/controllers/submit-expenses.php">
                 <h2>Périodes</h2>
-                <label for="titre">Mois / Année</label>
+                <label for="titre">Mois / Année :</label>
                 <input type="month" name="dateConsult" class="zone" required>
                 <br>
                 <input type="submit" value="Valider la période" class="zone">
@@ -62,10 +62,10 @@
                         <th>Remboursement</th>
                     </tr>
                     <tr>
-                        <td><label name="repas"></label></td>
-                        <td><label name="nuitee"></label></td>
-                        <td><label name="etape"></label></td>
-                        <td><label name="km"></label></td>
+                        <td><label name="repas"></label><?php echo isset($_SESSION['consult_repas']) ? $_SESSION['consult_repas'] : '0'; ?></td>
+                        <td><label name="nuitee"></label><?php echo isset($_SESSION['consult_nuit']) ? $_SESSION['consult_nuit'] : '0'; ?></td>
+                        <td><label name="etape"></label><?php echo isset($_SESSION['consult_etape']) ? $_SESSION['consult_etape'] : '0'; ?></td>
+                        <td><label name="km"></label><?php echo isset($_SESSION['consult_kilometre']) ? $_SESSION['consult_kilometre'] : '0'; ?></td>
                         <td><label name="situation"></label></td>
                         <td><label name="dateOper"></label></td>
                         <td><label name="remboursement"></label></td>
