@@ -89,12 +89,27 @@
             }
         }
 
+        // Récupération des frais hors forfait de l'utilisateur
+        $selectHorsForfaitSQL = "SELECT date_frais, description, montant FROM ligne_frais_hors_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
+        $result = $db->query($selectHorsForfaitSQL);
+
+        $_SESSION["frais_hors_forfait"] = [];
+
+        // Remplissage des valeurs des frais hors forfait dans un tableaux
+        while ($ligne = $result->fetch()) {
+            $_SESSION["frais_hors_forfait"][] = ["date" => $ligne["date_frais"],
+                "libelle" => $ligne["description"],
+                "montant" => $ligne["montant"]
+            ];
+        }
+
         header("Location: ../../php/expense-entry.php");
         exit();
     }
 
     // Récupération du formulaire de frais
     if (isset($_POST["FRA_REPAS"]) && isset($_POST["FRA_NUIT"]) && isset($_POST["FRA_ETAP"]) && isset($_POST["FRA_KM"])) {
+        $id_utilisateur = $_SESSION["user_id"];
         $mois = $_SESSION["FRA_MOIS"] ?? date('m');
         $annee = $_SESSION["FRA_AN"] ?? date('Y');
         $repas = $_POST["FRA_REPAS"];
@@ -103,30 +118,28 @@
         $kilometre = $_POST["FRA_KM"];
         
         if (!is_numeric($repas) || $repas < 0) {
-            $_SESSION["errorMessage"] = "Le nombre de repas doit être positif.";
+            $_SESSION["errorForfait"] = "Le nombre de repas doit être positif.";
             header("Location: ../../php/expense-entry.php");
             exit();
         }
 
         if (!is_numeric($nuit) || $nuit < 0) {
-            $_SESSION["errorMessage"] = "Le nombre de nuit doit être positif.";
+            $_SESSION["errorForfait"] = "Le nombre de nuit doit être positif.";
             header("Location: ../../php/expense-entry.php");
             exit();
         }
 
         if (!is_numeric($etape) || $etape < 0) {
-            $_SESSION["errorMessage"] = "Le nombre d'etape' doit être positif.";
+            $_SESSION["errorForfait"] = "Le nombre d'etape' doit être positif.";
             header("Location: ../../php/expense-entry.php");
             exit();
         }
 
         if (!is_numeric($kilometre) || $kilometre < 0) {
-            $_SESSION["errorMessage"] = "Le nombre de kilometre doit être positif.";
+            $_SESSION["errorForfait"] = "Le nombre de kilometre doit être positif.";
             header("Location: ../../php/expense-entry.php");
             exit();
         }
-
-        $id_utilisateur = $_SESSION["user_id"];
 
         $selectForfaitSQL = "SELECT id_frais, montant, description FROM frais_forfait";
         $resultForfait = $db->query($selectForfaitSQL);
@@ -155,45 +168,55 @@
                 updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $kilometre);
             }
         }
+    }
 
-        // Traitement des frais hors forfait
-        /*
-        $i = 1;
-        while (isset($_POST["FRA_AUT_DAT".$i]) && isset($_POST["FRA_AUT_LIB".$i]) && isset($_POST["FRA_AUT_MONT".$i])) {
-            $date = $_POST["FRA_AUT_DAT".$i];
-            $libelle = $_POST["FRA_AUT_LIB".$i];
-            $montant = $_POST["FRA_AUT_MONT".$i];
+    // Traitement des frais hors forfait
+    $i = 1;
+    while (isset($_POST["FRA_AUT_DAT".$i]) && isset($_POST["FRA_AUT_LIB".$i]) && isset($_POST["FRA_AUT_MONT".$i])) {
+        $id_utilisateur = $_SESSION["user_id"];
+        $mois = $_SESSION["FRA_MOIS"] ?? date('m');
+        $annee = $_SESSION["FRA_AN"] ?? date('Y');
+        $date = $_POST["FRA_AUT_DAT".$i];
+        $libelle = $_POST["FRA_AUT_LIB".$i];
+        $montant = $_POST["FRA_AUT_MONT".$i];
         
-            if (empty($date) || empty($libelle) || empty($montant)) {
-                $_SESSION["errorMessage"] = "Tous les champs des frais hors forfait doivent être renseignés.";
-                header("Location: ../../php/expense-entry.php");
-                exit();
-            }
+        if (empty($date) || empty($libelle) || empty($montant)) {
+            $_SESSION["errorHorsForfait"] = "Tous les champs des frais hors forfait doivent être renseignés.";
+            header("Location: ../../php/expense-entry.php");
+            exit();
+        }
                 
         
-            if (!is_numeric($montant) || $montant < 0) {
-                $_SESSION["errorMessage"] = "Le montant doit être un nombre positif.";
-                header("Location: ../../php/expense-entry.php");
-                exit();
-            }
+        if (!is_numeric($montant) || $montant < 0) {
+            $_SESSION["errorHorsForfait"] = "Le montant doit être un nombre positif.";
+            header("Location: ../../php/expense-entry.php");
+            exit();
+        }
         
-            if (!(DateTime::createFromFormat('Y-m-d', $date) && DateTime::createFromFormat('Y-m-d', $date)->format('Y-m-d') === $date)) {
-                $_SESSION["errorMessage"] = "La date d'engagement doit être valide.";
-                header("Location: ../../php/expense-entry.php");
-                exit();
-            }
+        if (!(DateTime::createFromFormat('Y-m-d', $date) && DateTime::createFromFormat('Y-m-d', $date)->format('Y-m-d') === $date)) {
+            $_SESSION["errorHorsForfait"] = "La date d'engagement doit être valide.";
+            header("Location: ../../php/expense-entry.php");
+            exit();
+        }
         
-            if (strtotime($date) < strtotime('-1 year')) {
-                $_SESSION["errorMessage"] = "La date d'engagement doit se situer dans l’année écoulée.";
-                header("Location: ../../php/expense-entry.php");
-                exit();
-            }
-        
-            updateLigneFraisHorsForfait($db, $id_utilisateur, $mois, $annee, $date, $libelle, $montant);
-            $i++;
+        if (strtotime($date) < strtotime('-1 year')) {
+            $_SESSION["errorHorsForfait"] = "La date d'engagement doit se situer dans l’année écoulée.";
+            header("Location: ../../php/expense-entry.php");
+            exit();
+        }
 
-            
-        }*/
+        $selectSQL = "SELECT id_utilisateur, mois, annee FROM fiche_frais WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
+        $result = $db->query($selectSQL);
+        $ligne = $result->fetch();
+
+        if (!$ligne) {
+            $insertSQL = "INSERT INTO fiche_frais (id_utilisateur, mois, annee, id_etat) VALUES ($id_utilisateur, $mois, $annee, 1)";
+            $db->exec($insertSQL);
+        }
+        
+        updateLigneFraisHorsForfait($db, $id_utilisateur, $mois, $annee, $date, $libelle, $montant);
+        $i++;  
+    }
 
         // Mettre à jour la date de modification
         $updateSQL = "UPDATE fiche_frais SET date_modification = current_timestamp() WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
@@ -201,7 +224,8 @@
 
         // Réinitialisation des session
         $_SESSION["errorDate"] = "";
-        $_SESSION["errorMessage"] = "";
+        $_SESSION["errorForfait"] = "";
+        $_SESSION["errorHorsForfait"] = "";
         $_SESSION["repas"] = $repas;
         $_SESSION["nuit"] = $nuit;
         $_SESSION["etape"] = $etape;
@@ -210,5 +234,4 @@
         // Redirection vers le formulaire
         header("Location: ../../php/expense-entry.php");
         exit();
-    }
 ?>

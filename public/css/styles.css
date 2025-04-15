@@ -86,7 +86,7 @@ p {
     color: #d1d1d1;
 }
 
-form .zone {
+.zone {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -94,6 +94,10 @@ form .zone {
     border-radius: 5px;
     border: none;
     color: #fff;
+}
+
+.zone:hover {
+    background-color: #383A40;
 }
 
 ::-webkit-scrollbar {
@@ -107,18 +111,6 @@ form .zone {
 
 ::-webkit-scrollbar-thumb:hover {
     background-color: #232428;
-}
-
-input[type="reset"],
-input[type="submit"],
-#but1 {
-    background-color: #3D3E45;
-}
-
-input[type="reset"]:hover,
-input[type="submit"]:hover,
-#but1:hover {
-    background-color: #383A40;
 }
 
 .login-container {
