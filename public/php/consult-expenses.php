@@ -8,16 +8,9 @@
     if ($_SESSION["user_role"] != "Visiteur médical" && $_SESSION["user_role"] != "Comptable") {
         header("location: ../index.php");
     }
-
-    $errorDate = $_SESSION["errorDate"] ?? "";
-    $errorMessage = $_SESSION["errorMessage"] ?? "";
-    unset($_SESSION["errorDate"], $_SESSION["errorMessage"]);
-    
     
     $role = $_SESSION["user_role"];
     $username = $_SESSION["username"];
-    $mois = $_SESSION["FRA_MOIS"] ?? date("m");
-    $annee = $_SESSION["FRA_AN"] ?? date("Y");
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +40,65 @@
             <a href="../../src/controllers/logout.php" class="logout">Déconnexion</a>
         </div>
         <div class="content">
+            <div id="haut">
+                <h1>Création de frais</h1>
+            </div>
+            <div>
+            <form name="formPeriode" method="post" action="../../src/controllers/submit-expenses.php">
+                <h2>Périodes</h2>
+                <label for="titre">Mois / Année</label>
+                <input type="month" name="dateConsult" class="zone" required>
+                <br>
+                <input type="submit" value="Valider la période" class="zone">
+                <h2>Frais au forfait</h2>
+                <table>
+                    <tr>
+                        <th>Repas midi</th>
+                        <th>Nuitée</th>
+                        <th>Etape</th>
+                        <th>Km</th>
+                        <th>Situation</th>
+                        <th>Date opération</th>
+                        <th>Remboursement</th>
+                    </tr>
+                    <tr>
+                        <td><label name="repas"></label></td>
+                        <td><label name="nuitee"></label></td>
+                        <td><label name="etape"></label></td>
+                        <td><label name="km"></label></td>
+                        <td><label name="situation"></label></td>
+                        <td><label name="dateOper"></label></td>
+                        <td><label name="remboursement"></label></td>
+                    </tr>
+                </table>
+                <br>
+                <h2>Hors Forfait</h2>
 
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Libellé</th>
+                        <th>Montant</th>
+                        <th>Situation</th>
+                        <th>Date opération</th>
+                    </tr>
+                    <?php
+                        if (isset($_SESSION["consult_hors_forfait"]) && !empty($_SESSION["consult_hors_forfait"])) {
+                            foreach ($_SESSION["consult_hors_forfait"] as $frais) {
+                                echo "<tr>
+                                    <td><label name='hfDate1'>".$frais["date"]."</label></td>
+                                    <td><label name='hfLib1'>".$frais["description"]."</label></td>
+                                    <td><label name='hfMont1'>".$frais["montant"]."</label></td>
+                                    <td><label name='hfSitu1'>".$frais["etat"]."</label></td>
+                                    <td><label name='hfDateOper1'>".$frais["date_modification"]."</label></td>
+                                </tr>";
+                            }
+                        }
+                    ?>
+                </table>
+
+            </form>
+            </div>
         </div>
         <script src="../js/script.js"></script>
 </body>

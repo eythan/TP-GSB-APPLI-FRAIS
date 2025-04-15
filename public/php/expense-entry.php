@@ -51,7 +51,7 @@
             <div id="haut">
                 <h1>Création de frais</h1>
             </div>
-            <div id="content">
+            <div>
                 <form name="formPeriode" method="post" action="../../src/controllers/insert-expenses.php">
                     <h2>Périodes</h2>
                     <label>Mois :</label><input type="number" name="FRA_MOIS" class="zone" min="1" max="12" placeholder="Mois" value="<?php echo $mois; ?>" required>

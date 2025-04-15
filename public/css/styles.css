@@ -163,3 +163,26 @@ p {
 .logout:hover {
     background-color: #383A40;
 }
+
+table {
+    width: 100%;
+    border-radius: 10px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #2B2D31;
+}
+
+th {
+    background-color: #383A40;
+    color: #fff;
+    font-weight: bold;
+}
+
+td {
+    background-color: #3D3E45;
+    color: #d1d1d1;
+}
