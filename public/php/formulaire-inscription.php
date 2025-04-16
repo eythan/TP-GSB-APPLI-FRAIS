@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_SESSION["erreurInscription"])) {
-    $errorMessage = $_SESSION["erreurInscription"];
+    $erreurInscription = $_SESSION["erreurInscription"];
     unset($_SESSION["erreurInscription"]);
 }
 ?>
@@ -50,10 +50,9 @@ if (isset($_SESSION["erreurInscription"])) {
 
                 <br>
                 <?php
-                if (!empty($erreurInscription)) {
-                    echo '<label for="error" style="color: red;">' . $erreurInscription . '</label>';
-                }
-                ?>
+                if (!empty($erreurInscription)) { ?>
+                    <label style="color: red; display: block; text-align: center;"><?php echo $erreurInscription ?></label>
+                <?php } ?>
                 <br>
                 <input type="submit" value="Créer un compte" class="zone">
             </form>

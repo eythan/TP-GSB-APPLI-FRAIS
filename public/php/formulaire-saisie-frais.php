@@ -15,10 +15,10 @@ $erreurHorsForfait = $_SESSION["erreurHorsForfait"] ?? "";
 unset($_SESSION["erreurDate"], $_SESSION["erreurForfait"], $_SESSION["erreurHorsForfait"]);
 
 
-$role = $_SESSION["roleUtilisateur"];
+$roleUtilisateur = $_SESSION["roleUtilisateur"];
 $nomUtilisateur = $_SESSION["nomUtilisateur"];
-$mois = $_SESSION["fraisMois"] ?? date("m");
-$annee = $_SESSION["fraisAnnee"] ?? date("Y");
+$fraisMois = $_SESSION["fraisMois"] ?? date("m");
+$fraisAnnee = $_SESSION["fraisAnnee"] ?? date("Y");
 ?>
 
 <!DOCTYPE html>
@@ -37,10 +37,10 @@ $annee = $_SESSION["fraisAnnee"] ?? date("Y");
         <div class="sidebar">
             <img src="../assets/images/logo.png" alt="Logo">
             <div class="menu">
-                <div class="user">Compte : <?php echo strtolower($role); ?></div>
+                <div class="user">Compte : <?php echo strtolower($roleUtilisateur); ?></div>
                 <a href="formulaire-saisie-frais.php" style="color: #F5E1A4;">Création de frais</a>
                 <a href="formulaire-consultation-frais.php">Consultation des frais</a>
-                <?php if ($role == "Comptable") { ?>
+                <?php if ($roleUtilisateur == "Comptable") { ?>
                     <a href="formulaire-validation-frais.php">Gestion des frais</a>
                 <?php } ?>
             </div>
@@ -55,15 +55,14 @@ $annee = $_SESSION["fraisAnnee"] ?? date("Y");
                 <form name="formPeriode" method="post" action="../../src/controllers/saisie-frais.php">
                     <h2>Périodes</h2>
                     <label>Mois :</label><input type="number" name="fraisMois" class="zone" min="1" max="12"
-                        placeholder="Mois" value="<?php echo $mois; ?>" required>
+                        placeholder="Mois" value="<?php echo $fraisMois; ?>" required>
                     <label>Année :</label><input type="number" name="fraisAnnee" class="zone" min="2000" max="2100"
-                        placeholder="Année" value="<?php echo $annee; ?>" required>
+                        placeholder="Année" value="<?php echo $fraisAnnee; ?>" required>
                     <br>
                     <?php
-                    if (!empty($erreurDate)) {
-                        echo '<label for="error" style="color: red; display: block; text-align: center;">' . $erreurDate . '</label>';
-                    }
-                    ?>
+                    if (!empty($erreurDate)) { ?>
+                        <label style="color: red; display: block; text-align: center;"><?php echo $erreurDate ?></label>
+                    <?php } ?>
                     <input type="submit" value="Valider la période" class="zone">
                     </br>
                 </form>
@@ -84,10 +83,9 @@ $annee = $_SESSION["fraisAnnee"] ?? date("Y");
                         value="<?php echo isset($_SESSION['nombreKilometres']) ? $_SESSION['nombreKilometres'] : '0'; ?>">
                     <br>
                     <?php
-                    if (!empty($erreurForfait)) {
-                        echo '<label for="error" style="color: red; display: block; text-align: center;">' . $erreurForfait . '</label>';
-                    }
-                    ?>
+                    if (!empty($erreurForfait)) { ?>
+                        <label style="color: red; display: block; text-align: center;"><?php echo $erreurForfait ?></label>
+                    <?php } ?>
                     <input type="reset" class="zone">
                     <input type="submit" class="zone">
                     </br>
@@ -100,29 +98,36 @@ $annee = $_SESSION["fraisAnnee"] ?? date("Y");
                         if (isset($_SESSION["fraisHorsForfait"]) && !empty($_SESSION["fraisHorsForfait"])) {
                             $i = 0;
                             while ($i < count($_SESSION["fraisHorsForfait"])) {
-                                $frais = $_SESSION["fraisHorsForfait"][$i];
-                                echo '<label class="titre">Frais numéro ' . ($i + 1) . '</label>';
-                                echo '<input type="date" name="fraisDate' . ($i + 1) . '" class="zone" placeholder="Date" value="' . $frais['date'] . '">';
-                                echo '<input type="texte" name="fraisDescription' . ($i + 1) . '" class="zone" placeholder="Libellé" value="' . $frais['description'] . '">';
-                                echo '<input type="number" name="fraisMontant' . ($i + 1) . '" class="zone" placeholder="Montant" value="' . $frais['montant'] . '">';
-                                $i++;
-                            }
-                            echo '<input type="button" id="but' . ($i) . '" value="+" onclick="ajoutLigne(' . ($i) . ');" class="zone">';
-                        } else {
-                            echo '<label class="titre">Frais numéro 1</label>';
-                            echo '<input type="date" name="fraisDate1" class="zone" placeholder="Date">';
-                            echo '<input type="texte" name="fraisDescription1" class="zone" placeholder="Libellé">';
-                            echo '<input type="number" name="fraisMontant1" class="zone" placeholder="Montant">';
-                            echo '<input type="button" id="but1" value="+" onclick="ajoutLigne(1);" class="zone">';
-                        }
-                        ?>
+                                $frais = $_SESSION["fraisHorsForfait"][$i]; ?>
+
+                                <label class="titre">Frais numéro <?php echo $i + 1; ?></label>
+                                <input type="date" name="fraisDate<?php echo $i + 1; ?>" class="zone" placeholder="Date"
+                                    value="<?php echo $frais['date']; ?>">
+                                <input type="text" name="fraisDescription<?php echo $i + 1; ?>" class="zone"
+                                    placeholder="Libellé" value="<?php echo $frais['description']; ?>">
+                                <input type="number" name="fraisMontant<?php echo $i + 1; ?>" class="zone" placeholder="Montant"
+                                    value="<?php echo $frais['montant']; ?>">
+
+                                <?php $i++;
+                            } ?>
+
+                            <input type="button" id="but<?php echo $i; ?>" value="+"
+                                onclick="ajoutLigne(<?php echo $i; ?>);" class="zone">
+
+                        <?php } else { ?>
+                            <label class="titre">Frais numéro 1</label>
+                            <input type="date" name="fraisDate1" class="zone" placeholder="Date">
+                            <input type="text" name="fraisDescription1" class="zone" placeholder="Libellé">
+                            <input type="number" name="fraisMontant1" class="zone" placeholder="Montant">
+                            <input type="button" id="but1" value="+" onclick="ajoutLigne(1);" class="zone">
+                        <?php } ?>
                     </div>
                     <br>
                     <?php
-                    if (!empty($erreurHorsForfait)) {
-                        echo '<label for="error" style="color: red; display: block; text-align: center;">' . $erreurHorsForfait . '</label>';
-                    }
-                    ?>
+                    if (!empty($erreurHorsForfait)) { ?>
+                        <label
+                            style="color: red; display: block; text-align: center;"><?php echo $erreurHorsForfait ?></label>
+                    <?php } ?>
                     <input type="reset" class="zone">
                     <input type="submit" class="zone">
                     </br>
