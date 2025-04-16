@@ -1,10 +1,10 @@
 <?php
-    session_start();
-    
-    if (isset($_SESSION["errorMessage"])) {
-        $errorMessage = $_SESSION["errorMessage"];
-        unset($_SESSION["errorMessage"]);
-    }
+session_start();
+
+if (isset($_SESSION["errorMessage"])) {
+    $errorMessage = $_SESSION["errorMessage"];
+    unset($_SESSION["errorMessage"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,19 +23,20 @@
         <div class="login-box">
             <h1>Connexion</h1>
             <br>
-            <form method="post" action="../src/controllers/check-login.php">
+            <form method="post" action="../src/controllers/connexion-utilisateur.php">
                 <label for="mail">Email</label>
 
                 <input type="text" id="mail" name="mail" class="zone" placeholder="Votre email" required>
 
                 <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" class="zone" placeholder="Votre mot de passe" required>
+                <input type="password" id="password" name="password" class="zone" placeholder="Votre mot de passe"
+                    required>
 
                 <br>
-                <?php 
-                    if (!empty($errorMessage)) {
-                        echo '<label for="error" style="color: red;">'.$errorMessage.'</label>';
-                    }
+                <?php
+                if (!empty($errorMessage)) {
+                    echo '<label for="error" style="color: red;">' . $errorMessage . '</label>';
+                }
                 ?>
                 <br>
                 <input type="submit" value="Se connecter" class="zone">
