@@ -101,7 +101,7 @@ if (isset($_POST["fraisMois"]) && isset($_POST["fraisAnnee"])) {
     while ($ligne = $result->fetch()) {
         $_SESSION["fraisHorsForfait"][] = [
             "date" => $ligne["date_frais"],
-            "libelle" => $ligne["description"],
+            "description" => $ligne["description"],
             "montant" => $ligne["montant"]
         ];
     }
@@ -175,13 +175,13 @@ if (isset($_POST["fraisRepas"]) && isset($_POST["fraisNuits"]) && isset($_POST["
 
 // Traitement des frais hors forfait
 $i = 1;
-while (isset($_POST["FRA_AUT_DAT" . $i]) && isset($_POST["FRA_AUT_LIB" . $i]) && isset($_POST["FRA_AUT_MONT" . $i])) {
+while (isset($_POST["fraisDate" . $i]) && isset($_POST["fraisDescription" . $i]) && isset($_POST["fraisMontant" . $i])) {
     $id_utilisateur = $_SESSION["idUtilisateur"];
     $mois = $_SESSION["fraisMois"] ?? date('m');
     $annee = $_SESSION["fraisAnnee"] ?? date('Y');
-    $date = $_POST["FRA_AUT_DAT" . $i];
-    $libelle = $_POST["FRA_AUT_LIB" . $i];
-    $montant = $_POST["FRA_AUT_MONT" . $i];
+    $date = $_POST["fraisDate" . $i];
+    $libelle = $_POST["fraisDescription" . $i];
+    $montant = $_POST["fraisMontant" . $i];
 
     if (empty($date) || empty($libelle) || empty($montant)) {
         $_SESSION["erreurHorsForfait"] = "Tous les champs des frais hors forfait doivent être renseignés.";

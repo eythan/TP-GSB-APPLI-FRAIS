@@ -67,13 +67,12 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                             <td><label name="etape"></label><?php echo $_SESSION['consultationEtapes'] ?? '0' ?></td>
                             <td><label name="km"></label><?php echo $_SESSION['consultationKilometres'] ?? '0' ?></td>
                             <td><label name="situation"></label></td>
-                            <td><label name="dateOper"></label></td>
+                            <td><label name="dateOperation"></label></td>
                             <td><label name="remboursement"></label></td>
                         </tr>
                     </table>
                     <br>
                     <h2>Hors Forfait</h2>
-
                     <table>
                         <tr>
                             <th>Date</th>
@@ -82,25 +81,22 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                             <th>Situation</th>
                             <th>Date opération</th>
                         </tr>
-
                         <?php
                         if (isset($_SESSION["ConsultationHorsForfait"]) && !empty($_SESSION["ConsultationHorsForfait"])) {
                             foreach ($_SESSION["ConsultationHorsForfait"] as $frais) { ?>
                                 <tr>
-                                    <td><label name='hfDate1'><?= $frais["date"] ?></label></td>
-                                    <td><label name='hfLib1'><?php echo $frais["description"]; ?></label></td>
-                                    <td><label name='hfMont1'><?php echo $frais["montant"]; ?></label></td>
-                                    <td><label name='hfSitu1'><?php echo $frais["etat"]; ?></label></td>
-                                    <td><label name='hfDateOper1'><?php echo $frais["date_modification"]; ?></label></td>
+                                    <td><label name='dateHorsFrais'><?= $frais["date"] ?></label></td>
+                                    <td><label name='descriptionHorsFrais'><?php echo $frais["description"]; ?></label></td>
+                                    <td><label name='montantHorsFrais'><?php echo $frais["montant"]; ?></label></td>
+                                    <td><label name='etatHorsFrais'><?php echo $frais["etat_description"]; ?></label></td>
+                                    <td><label name='dateOperationHorsFrais'><?php echo $frais["date_modification"]; ?></label></td>
                                 </tr>
                             <?php }
                         } ?>
                     </table>
-
                 </form>
             </div>
         </div>
-        <script src="../js/script.js"></script>
 </body>
 
 </html>

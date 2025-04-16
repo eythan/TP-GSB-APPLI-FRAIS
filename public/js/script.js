@@ -10,7 +10,7 @@ function ajoutLigne(pNumero) {
     laDiv.appendChild(label);
 
     var ladate = document.createElement("input");
-    ladate.name = "FRA_AUT_DAT" + pNumero;
+    ladate.name = "fraisDate" + pNumero;
     ladate.size = "12";
     ladate.className = "zone";
     ladate.placeholder = "Date";
@@ -18,14 +18,14 @@ function ajoutLigne(pNumero) {
     laDiv.appendChild(ladate);
 
     var libelle = document.createElement("input");
-    libelle.name = "FRA_AUT_LIB" + pNumero;
+    libelle.name = "fraisDescription" + pNumero;
     libelle.size = "30";
     libelle.className = "zone";
     libelle.placeholder = "Libellé";
     laDiv.appendChild(libelle);
 
     var mont = document.createElement("input");
-    mont.name = "FRA_AUT_MONT" + pNumero;
+    mont.name = "fraisMontant" + pNumero;
     mont.size = "3";
     mont.className = "zone";
     mont.placeholder = "Montant";

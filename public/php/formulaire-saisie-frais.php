@@ -102,17 +102,17 @@ $annee = $_SESSION["fraisAnnee"] ?? date("Y");
                             while ($i < count($_SESSION["fraisHorsForfait"])) {
                                 $frais = $_SESSION["fraisHorsForfait"][$i];
                                 echo '<label class="titre">Frais numéro ' . ($i + 1) . '</label>';
-                                echo '<input type="date" name="FRA_AUT_DAT' . ($i + 1) . '" class="zone" placeholder="Date" value="' . $frais['date'] . '">';
-                                echo '<input type="texte" name="FRA_AUT_LIB' . ($i + 1) . '" class="zone" placeholder="Libellé" value="' . $frais['libelle'] . '">';
-                                echo '<input type="number" name="FRA_AUT_MONT' . ($i + 1) . '" class="zone" placeholder="Montant" value="' . $frais['montant'] . '">';
+                                echo '<input type="date" name="fraisDate' . ($i + 1) . '" class="zone" placeholder="Date" value="' . $frais['date'] . '">';
+                                echo '<input type="texte" name="fraisDescription' . ($i + 1) . '" class="zone" placeholder="Libellé" value="' . $frais['description'] . '">';
+                                echo '<input type="number" name="fraisMontant' . ($i + 1) . '" class="zone" placeholder="Montant" value="' . $frais['montant'] . '">';
                                 $i++;
                             }
                             echo '<input type="button" id="but' . ($i) . '" value="+" onclick="ajoutLigne(' . ($i) . ');" class="zone">';
                         } else {
                             echo '<label class="titre">Frais numéro 1</label>';
-                            echo '<input type="date" name="FRA_AUT_DAT1" class="zone" placeholder="Date">';
-                            echo '<input type="texte" name="FRA_AUT_LIB1" class="zone" placeholder="Libellé">';
-                            echo '<input type="number" name="FRA_AUT_MONT1" class="zone" placeholder="Montant">';
+                            echo '<input type="date" name="fraisDate1" class="zone" placeholder="Date">';
+                            echo '<input type="texte" name="fraisDescription1" class="zone" placeholder="Libellé">';
+                            echo '<input type="number" name="fraisMontant1" class="zone" placeholder="Montant">';
                             echo '<input type="button" id="but1" value="+" onclick="ajoutLigne(1);" class="zone">';
                         }
                         ?>

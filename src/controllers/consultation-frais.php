@@ -40,7 +40,7 @@ if (isset($_POST["dateConsult"])) {
     }
 
     // Récuperation des frais hors forfait
-    $selectSQL = "SELECT ligne_frais_hors_forfait.date_frais, ligne_frais_hors_forfait.description, ligne_frais_hors_forfait.montant, etat.description AS etat_description, fiche_frais.date_modification FROM ligne_frais_hors_forfait, etat, fiche_frais WHERE ligne_frais_hors_forfait.id_utilisateur = fiche_frais.id_utilisateur AND fiche_frais.id_etat = etat.id_etat AND ligne_frais_hors_forfait.id_utilisateur = $id_utilisateur AND fiche_frais.mois = $mois AND fiche_frais.annee = $annee";
+    $selectSQL = "SELECT ligne_frais_hors_forfait.date_frais, ligne_frais_hors_forfait.description, ligne_frais_hors_forfait.montant, etat.description AS etat_description, fiche_frais.date_modification FROM ligne_frais_hors_forfait, etat, fiche_frais WHERE ligne_frais_hors_forfait.id_utilisateur = fiche_frais.id_utilisateur AND fiche_frais.id_etat = etat.id_etat AND ligne_frais_hors_forfait.mois = fiche_frais.mois AND ligne_frais_hors_forfait.annee = fiche_frais.annee AND ligne_frais_hors_forfait.id_utilisateur = $id_utilisateur AND fiche_frais.mois = $mois AND fiche_frais.annee = $annee";
     $result = $db->query($selectSQL);
 
     $_SESSION["ConsultationHorsForfait"] = [];
@@ -50,7 +50,7 @@ if (isset($_POST["dateConsult"])) {
             "date" => $ligne["date_frais"],
             "description" => $ligne["description"],
             "montant" => $ligne["montant"],
-            "etat" => $ligne["etat_description"],
+            "etat_description" => $ligne["etat_description"],
             "date_modification" => $ligne["date_modification"]
         ];
     }
