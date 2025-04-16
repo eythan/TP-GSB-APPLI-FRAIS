@@ -9,7 +9,12 @@ if ($_SESSION["roleUtilisateur"] != "Visiteur médical" && $_SESSION["roleUtilis
     header("location: ../index.php");
 }
 
-$role = $_SESSION["roleUtilisateur"];
+if (isset($_SESSION["erreurConsultation"])) {
+    $erreurConsultation = $_SESSION["erreurConsultation"];
+    unset($_SESSION["erreurConsultation"]);
+}
+
+$roleUtilisateur = $_SESSION["roleUtilisateur"];
 $nomUtilisateur = $_SESSION["nomUtilisateur"];
 ?>
 
@@ -29,10 +34,10 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
         <div class="sidebar">
             <img src="../assets/images/logo.png" alt="Logo">
             <div class="menu">
-                <div class="user">Compte : <?php echo strtolower($role); ?></div>
+                <div class="user">Compte : <?php echo strtolower($roleUtilisateur); ?></div>
                 <a href="formulaire-saisie-frais.php">Création de frais</a>
                 <a href="formulaire-consultation-frais.php" style="color: #F5E1A4;">Consultation des frais</a>
-                <?php if ($role == "Comptable") { ?>
+                <?php if ($roleUtilisateur == "Comptable") { ?>
                     <a href="formulaire-validation-frais.php">Gestion des frais</a>
                 <?php } ?>
             </div>
@@ -49,6 +54,10 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                     <label for="titre">Mois / Année :</label>
                     <input type="month" name="dateConsult" class="zone" required>
                     <br>
+                    <?php
+                    if (!empty($erreurConsultation)) { ?>
+                        <label style="color: red; display: block; text-align: center;"><?php echo $erreurConsultation ?></label>
+                    <?php } ?>
                     <input type="submit" value="Valider la période" class="zone">
                     <h2>Frais au forfait</h2>
                     <table>
@@ -89,7 +98,8 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                                     <td><label name='descriptionHorsFrais'><?php echo $frais["description"]; ?></label></td>
                                     <td><label name='montantHorsFrais'><?php echo $frais["montant"]; ?></label></td>
                                     <td><label name='etatHorsFrais'><?php echo $frais["etat_description"]; ?></label></td>
-                                    <td><label name='dateOperationHorsFrais'><?php echo $frais["date_modification"]; ?></label></td>
+                                    <td><label name='dateOperationHorsFrais'><?php echo $frais["date_modification"]; ?></label>
+                                    </td>
                                 </tr>
                             <?php }
                         } ?>

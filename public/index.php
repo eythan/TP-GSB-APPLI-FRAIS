@@ -31,18 +31,16 @@ if (isset($_SESSION["erreurConnexion"])) {
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" class="zone" placeholder="Votre mot de passe"
                     required>
-
                 <br>
                 <?php
-                if (!empty($erreurConnexion)) {
-                    echo '<label for="error" style="color: red;">' . $erreurConnexion . '</label>';
-                }
-                ?>
+                if (!empty($erreurConnexion)) { ?>
+                    <label style="color: red; display: block; text-align: center;"><?php echo $erreurConnexion ?></label>
+                <?php } ?>
                 <br>
                 <input type="submit" value="Se connecter" class="zone">
             </form>
             <br>
-            <a href="php/registration.php"><button class="bouton">Créez un compte</button></a>
+            <a href="php/formulaire-inscription.php"><button class="bouton">Créez un compte</button></a>
         </div>
     </div>
 </body>

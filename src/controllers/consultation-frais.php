@@ -20,6 +20,18 @@ if (isset($_POST["dateConsult"])) {
 
     list($annee, $mois) = explode("-", $date);
 
+    if (!preg_match("/^\d{2}$/", $mois) || $mois < 1 || $mois > 12) {
+        $_SESSION["erreurConsultation"] = "Le mois doit être compris entre 01 et 12.";
+        header("Location: ../../php/formulaire-consultation-frais.php");
+        exit();
+    }
+
+    if (!preg_match("/^\d{4}$/", $annee)) {
+        $_SESSION["erreurConsultation"] = "Le format de l'année n'est pas correct.";
+        header("Location: ../../php/formulaire-consultation-frais.php");
+        exit();
+    }
+
     // Récupération des frais forfaitaires de l'utilisateur
     $selectSQL = "SELECT id_frais, quantite FROM ligne_frais_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
     $result = $db->query($selectSQL);
