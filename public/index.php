@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-if (isset($_SESSION["errorMessage"])) {
-    $errorMessage = $_SESSION["errorMessage"];
-    unset($_SESSION["errorMessage"]);
+if (isset($_SESSION["erreurConnexion"])) {
+    $erreurConnexion = $_SESSION["erreurConnexion"];
+    unset($_SESSION["erreurConnexion"]);
 }
 ?>
 
@@ -24,18 +24,18 @@ if (isset($_SESSION["errorMessage"])) {
             <h1>Connexion</h1>
             <br>
             <form method="post" action="../src/controllers/connexion-utilisateur.php">
-                <label for="mail">Email</label>
+                <label for="emailUtilisateur">Email</label>
 
-                <input type="text" id="mail" name="mail" class="zone" placeholder="Votre email" required>
+                <input type="text" id="emailUtilisateur" name="emailUtilisateur" class="zone" placeholder="Votre email" required>
 
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" class="zone" placeholder="Votre mot de passe"
+                <label for="motDePasse">Mot de passe</label>
+                <input type="password" id="motDePasse" name="motDePasse" class="zone" placeholder="Votre mot de passe"
                     required>
 
                 <br>
                 <?php
-                if (!empty($errorMessage)) {
-                    echo '<label for="error" style="color: red;">' . $errorMessage . '</label>';
+                if (!empty($erreurConnexion)) {
+                    echo '<label for="error" style="color: red;">' . $erreurConnexion . '</label>';
                 }
                 ?>
                 <br>
