@@ -1,23 +1,16 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["user_email"])) {
+if (!isset($_SESSION["emailUtilisateur"])) {
     header("location: ../index.php");
 }
 
-if ($_SESSION["user_role"] != "Comptable") {
+if ($_SESSION["roleUtilisateur"] != "Comptable") {
     header("location: ../index.php");
 }
 
-$errorDate = $_SESSION["errorDate"] ?? "";
-$errorMessage = $_SESSION["errorMessage"] ?? "";
-unset($_SESSION["errorDate"], $_SESSION["errorMessage"]);
-
-
-$role = $_SESSION["user_role"];
-$username = $_SESSION["username"];
-$mois = $_SESSION["FRA_MOIS"] ?? date("m");
-$annee = $_SESSION["FRA_AN"] ?? date("Y");
+$role = $_SESSION["roleUtilisateur"];
+$nomUtilisateur = $_SESSION["nomUtilisateur"];
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +36,7 @@ $annee = $_SESSION["FRA_AN"] ?? date("Y");
                     <a href="formulaire-validation-frais.php" style="color: #F5E1A4;">Gestion des frais</a>
                 <?php } ?>
             </div>
-            <div class="user">Bonjour <?php echo $username; ?></div>
+            <div class="user">Bonjour <?php echo $nomUtilisateur; ?></div>
             <a href="../../src/controllers/deconnexion-utilisateur.php" class="logout">Déconnexion</a>
         </div>
         <div class="content">

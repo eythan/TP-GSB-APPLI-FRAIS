@@ -11,19 +11,19 @@ $postal = $_POST["postal"];
 $city = $_POST["city"];
 
 if (empty($mail) || empty($password) || empty($lastname) || empty($firstname) || empty($address) || empty($postal) || empty($city)) {
-    $_SESSION["errorMessage"] = "Il y a un champ vide";
+    $_SESSION["erreurInscription"] = "Il y a un champ vide";
     header("Location: ../../php/formulaire-inscription.php");
     exit();
 }
 
 if (!preg_match('/^[0-9]{5}$/', $postal)) {
-    $_SESSION["errorMessage"] = "le code postal doit contenir 5 chiffres";
+    $_SESSION["erreurInscription"] = "le code postal doit contenir 5 chiffres";
     header("Location: ../../php/formulaire-inscription.php");
     exit();
 }
 
 if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION["errorMessage"] = "Format de l'email invalide";
+    $_SESSION["erreurInscription"] = "Format de l'email invalide";
     header("Location: ../../php/formulaire-inscription.php");
     exit();
 }
@@ -33,7 +33,7 @@ $result = $db->query($selectSQL);
 $ligne = $result->fetch();
 
 if ($ligne) {
-    $_SESSION["errorMessage"] = "Mail déja utilisé";
+    $_SESSION["erreurInscription"] = "Mail déja utilisé";
     header("Location: ../../php/formulaire-inscription.php");
     exit();
 }
@@ -44,9 +44,9 @@ $securePassword = hash("sha256", $password);
 $insertSQL = "INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, adresse, code_postal, ville) VALUES ('$lastname', '$firstname', '$mail', '$securePassword', 'visiteur', '$address', '$postal', '$city')";
 $db->exec($insertSQL);
 
-$_SESSION["user_email"] = $mail;
-$_SESSION["user_role"] = $role;
-$_SESSION["username"] = $firstname . " " . $lastname;
+$_SESSION["emailUtilisateur"] = $mail;
+$_SESSION["roleUtilisateur"] = $role;
+$_SESSION["nomUtilisateur"] = $firstname . " " . $lastname;
 
 header("Location: ../../php/formulaire-saisie-frais.php");
 exit();

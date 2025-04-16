@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-if (isset($_SESSION["errorMessage"])) {
-    $errorMessage = $_SESSION["errorMessage"];
-    unset($_SESSION["errorMessage"]);
+if (isset($_SESSION["erreurInscription"])) {
+    $errorMessage = $_SESSION["erreurInscription"];
+    unset($_SESSION["erreurInscription"]);
 }
 ?>
 
@@ -50,8 +50,8 @@ if (isset($_SESSION["errorMessage"])) {
 
                 <br>
                 <?php
-                if (!empty($errorMessage)) {
-                    echo '<label for="error" style="color: red;">' . $errorMessage . '</label>';
+                if (!empty($erreurInscription)) {
+                    echo '<label for="error" style="color: red;">' . $erreurInscription . '</label>';
                 }
                 ?>
                 <br>

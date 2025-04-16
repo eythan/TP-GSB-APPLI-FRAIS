@@ -2,29 +2,28 @@
 session_start();
 require_once("../includes/database.inc.php");
 
-$emailUtilisateur = $_POST["emailUtilisateur"];
-$motDePasse = $_POST["motDePasse"];
+$mail = $_POST["mail"];
+$password = $_POST["password"];
 
-if (empty($emailUtilisateur) || empty($motDePasse)) {
+if (empty($mail) || empty($password)) {
     $_SESSION["erreurConnexion"] = "Il y a un champ vide";
     header("Location: ../../index.php");
-    exit();
 }
 
-if (!filter_var($emailUtilisateur, FILTER_VALIDATE_EMAIL)) {
+if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
     $_SESSION["erreurConnexion"] = "Email invalide";
     header("Location: ../../index.php");
-    exit();
 }
 
 // Hachage du mot de passe
-$motDePasseHache = hash("sha256", $motDePasse);
+$securePassword = hash("sha256", $password);
 
-$selectSQL = "SELECT * FROM utilisateurs WHERE email = '$emailUtilisateur' AND mot_de_passe = '$motDePasseHache'";
+$selectSQL = "SELECT * FROM utilisateurs WHERE email = '$mail' AND mot_de_passe = '$securePassword'";
 $result = $db->query($selectSQL);
 $ligne = $result->fetch();
 
 if ($ligne) {
+    $_SESSION["emailUtilisateur"] = $ligne["email"];
     $_SESSION["idUtilisateur"] = $ligne["id_utilisateur"];
     $_SESSION["roleUtilisateur"] = $ligne["role"];
     $_SESSION["nomUtilisateur"] = $ligne["prenom"] . " " . $ligne["nom"];

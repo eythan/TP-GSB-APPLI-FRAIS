@@ -3,13 +3,13 @@ session_start();
 require_once("../includes/database.inc.php");
 
 // Vérifié si l'utilisateur est connecté
-if (!isset($_SESSION["user_email"])) {
+if (!isset($_SESSION["emailUtilisateur"])) {
     header("location: ../index.php");
     exit();
 }
 
 // Vérifié si l'utilisateur est un visiteur ou un comptable
-if ($_SESSION["user_role"] != "Visiteur médical" && $_SESSION["user_role"] != "Comptable") {
+if ($_SESSION["roleUtilisateur"] != "Visiteur médical" && $_SESSION["roleUtilisateur"] != "Comptable") {
     header("location: ../index.php");
     exit();
 }

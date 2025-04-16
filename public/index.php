@@ -24,12 +24,12 @@ if (isset($_SESSION["erreurConnexion"])) {
             <h1>Connexion</h1>
             <br>
             <form method="post" action="../src/controllers/connexion-utilisateur.php">
-                <label for="emailUtilisateur">Email</label>
+                <label for="mail">Email</label>
 
-                <input type="text" id="emailUtilisateur" name="emailUtilisateur" class="zone" placeholder="Votre email" required>
+                <input type="text" id="mail" name="mail" class="zone" placeholder="Votre email" required>
 
-                <label for="motDePasse">Mot de passe</label>
-                <input type="password" id="motDePasse" name="motDePasse" class="zone" placeholder="Votre mot de passe"
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" class="zone" placeholder="Votre mot de passe"
                     required>
 
                 <br>

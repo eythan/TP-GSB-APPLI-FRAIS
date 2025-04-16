@@ -3,7 +3,7 @@ session_start();
 require("../includes/database.inc.php");
 
 // Vérifié si l'utilisateur est connecté
-if (!isset($_SESSION["idUtilisateur"])) {
+if (!isset($_SESSION["emailUtilisateur"])) {
     header("location: ../index.php");
     exit();
 }
@@ -15,27 +15,27 @@ if ($_SESSION["roleUtilisateur"] != "Visiteur médical" && $_SESSION["roleUtilis
 }
 
 // Fonction pour mettre les valeur dans la ligne_frais_forfait
-function updateLigneFraisForfait($db, $idUtilisateur, $mois, $annee, $idFrais, $quantite)
+function updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $quantite)
 {
-    $selectSQL = "SELECT quantite FROM ligne_frais_forfait WHERE id_utilisateur = $idUtilisateur AND mois = $mois AND annee = $annee AND id_frais = $idFrais";
+    $selectSQL = "SELECT quantite FROM ligne_frais_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND id_frais = $id_frais";
     $result = $db->query($selectSQL);
     $ligne = $result->fetch();
 
     if ($ligne) {
         // Mise à jour de la ligne
-        $updateSQL = "UPDATE ligne_frais_forfait SET quantite = $quantite WHERE id_utilisateur = $idUtilisateur AND mois = $mois AND annee = $annee AND id_frais = $idFrais";
+        $updateSQL = "UPDATE ligne_frais_forfait SET quantite = $quantite WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND id_frais = $id_frais";
         $db->exec($updateSQL);
     } else {
         // Insertion d'une nouvelle ligne
-        $insertSQL = "INSERT INTO ligne_frais_forfait (id_utilisateur, mois, annee, id_frais, quantite) VALUES ($idUtilisateur, $mois, $annee, $idFrais, $quantite)";
+        $insertSQL = "INSERT INTO ligne_frais_forfait (id_utilisateur, mois, annee, id_frais, quantite) VALUES ($id_utilisateur, $mois, $annee, $id_frais, $quantite)";
         $db->exec($insertSQL);
     }
 }
 
 // Fonction pour mettre les valeur dans la ligne_frais_hors_forfait
-function updateLigneFraisHorsForfait($db, $idUtilisateur, $mois, $annee, $date, $libelle, $montant)
+function updateLigneFraisHorsForfait($db, $id_utilisateur, $mois, $annee, $date, $libelle, $montant)
 {
-    $selectSQL = "SELECT id_hors_forfait FROM ligne_frais_hors_forfait WHERE id_utilisateur = $idUtilisateur AND mois = $mois AND annee = $annee AND description = '$libelle' AND montant = $montant";
+    $selectSQL = "SELECT id_hors_forfait FROM ligne_frais_hors_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee AND description = '$libelle' AND montant = $montant";
     $result = $db->query($selectSQL);
     $ligne = $result->fetch();
 
@@ -45,36 +45,36 @@ function updateLigneFraisHorsForfait($db, $idUtilisateur, $mois, $annee, $date, 
         $db->exec($updateSQL);
     } else {
         // Insertion d'une nouvelle ligne
-        $insertSQL = "INSERT INTO ligne_frais_hors_forfait (id_utilisateur, mois, annee, date_frais, montant, description) VALUES ($idUtilisateur, $mois, $annee, '$date', $montant, '$libelle')";
+        $insertSQL = "INSERT INTO ligne_frais_hors_forfait (id_utilisateur, mois, annee, date_frais, montant, description) VALUES ($id_utilisateur, $mois, $annee, '$date', $montant, '$libelle')";
         $db->exec($insertSQL);
     }
 }
 
 // Récupération du formulaire de période
 if (isset($_POST["fraisMois"]) && isset($_POST["fraisAnnee"])) {
-    $fraisMois = str_pad($_POST["fraisMois"], 2, "0", STR_PAD_LEFT);
-    $fraisAnnee = $_POST["fraisAnnee"];
+    $mois = str_pad($_POST["fraisMois"], 2, "0", STR_PAD_LEFT);
+    $annee = $_POST["fraisAnnee"];
 
-    if (!preg_match("/^\d{2}$/", $fraisMois) || $fraisMois < 1 || $fraisMois > 12) {
+    if (!preg_match("/^\d{2}$/", $mois) || $mois < 1 || $mois > 12) {
         $_SESSION["erreurDate"] = "Le mois doit être compris entre 01 et 12.";
         header("Location: ../../php/formulaire-saisie-frais.php");
         exit();
     }
 
-    if (!preg_match("/^\d{4}$/", $fraisAnnee)) {
+    if (!preg_match("/^\d{4}$/", $annee)) {
         $_SESSION["erreurDate"] = "Le format de l'année n'est pas correct.";
         header("Location: ../../php/formulaire-saisie-frais.php");
         exit();
     }
 
-    $_SESSION["fraisMois"] = $fraisMois;
-    $_SESSION["fraisAnnee"] = $fraisAnnee;
+    $_SESSION["fraisMois"] = $mois;
+    $_SESSION["fraisAnnee"] = $annee;
 
-    $idUtilisateur = $_SESSION["idUtilisateur"];
+    $id_utilisateur = $_SESSION["idUtilisateur"];
 
     // Récupération des frais forfaitaires de l'utilisateur
-    $selectForfaitSQL = "SELECT id_frais, quantite FROM ligne_frais_forfait WHERE id_utilisateur = $idUtilisateur AND mois = $fraisMois AND annee = $fraisAnnee";
-    $result = $db->query($selectForfaitSQL);
+    $selectSQL = "SELECT id_frais, quantite FROM ligne_frais_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
+    $result = $db->query($selectSQL);
 
     $_SESSION["nombreRepas"] = $_SESSION["nombreNuits"] = $_SESSION["nombreEtapes"] = $_SESSION["nombreKilometres"] = 0;
 
@@ -92,7 +92,7 @@ if (isset($_POST["fraisMois"]) && isset($_POST["fraisAnnee"])) {
     }
 
     // Récupération des frais hors forfait de l'utilisateur
-    $selectHorsForfaitSQL = "SELECT date_frais, description, montant FROM ligne_frais_hors_forfait WHERE id_utilisateur = $idUtilisateur AND mois = $fraisMois AND annee = $fraisAnnee";
+    $selectHorsForfaitSQL = "SELECT date_frais, description, montant FROM ligne_frais_hors_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
     $result = $db->query($selectHorsForfaitSQL);
 
     $_SESSION["fraisHorsForfait"] = [];
@@ -100,9 +100,9 @@ if (isset($_POST["fraisMois"]) && isset($_POST["fraisAnnee"])) {
     // Remplissage des valeurs des frais hors forfait dans un tableaux
     while ($ligne = $result->fetch()) {
         $_SESSION["fraisHorsForfait"][] = [
-            "dateHorsForfait" => $ligne["date_frais"],
-            "descriptionHorsForfait" => $ligne["description"],
-            "montantHorsForfait" => $ligne["montant"]
+            "date" => $ligne["date_frais"],
+            "libelle" => $ligne["description"],
+            "montant" => $ligne["montant"]
         ];
     }
 
@@ -111,14 +111,14 @@ if (isset($_POST["fraisMois"]) && isset($_POST["fraisAnnee"])) {
 }
 
 // Récupération du formulaire de frais
-if (isset($_POST["nombreRepas"]) && isset($_POST["nombreNuits"]) && isset($_POST["nombreEtapes"]) && isset($_POST["nombreKilometres"])) {
-    $idUtilisateur = $_SESSION["idUtilisateur"];
-    $fraisMois = $_SESSION["fraisMois"] ?? date('m');
-    $fraisAnnee = $_SESSION["fraisAnnee"] ?? date('Y');
-    $nombreRepas = $_POST["nombreRepas"];
-    $nombreNuits = $_POST["nombreNuits"];
-    $nombreEtapes = $_POST["nombreEtapes"];
-    $nombreKilometres = $_POST["nombreKilometres"];
+if (isset($_POST["fraisRepas"]) && isset($_POST["fraisNuits"]) && isset($_POST["fraisEtapes"]) && isset($_POST["fraisKilometres"])) {
+    $id_utilisateur = $_SESSION["idUtilisateur"];
+    $mois = $_SESSION["fraisMois"] ?? date('m');
+    $annee = $_SESSION["fraisAnnee"] ?? date('Y');
+    $nombreRepas = $_POST["fraisRepas"];
+    $nombreNuits = $_POST["fraisNuits"];
+    $nombreEtapes = $_POST["fraisEtapes"];
+    $nombreKilometres = $_POST["fraisKilometres"];
 
     if (!is_numeric($nombreRepas) || $nombreRepas < 0) {
         $_SESSION["erreurForfait"] = "Le nombre de repas doit être positif.";
@@ -147,82 +147,82 @@ if (isset($_POST["nombreRepas"]) && isset($_POST["nombreNuits"]) && isset($_POST
     $selectForfaitSQL = "SELECT id_frais, montant, description FROM frais_forfait";
     $resultForfait = $db->query($selectForfaitSQL);
 
-    $selectSQL = "SELECT id_utilisateur, mois, annee FROM fiche_frais WHERE id_utilisateur = $idUtilisateur AND mois = $fraisMois AND annee = $fraisAnnee";
+    $selectSQL = "SELECT id_utilisateur, mois, annee FROM fiche_frais WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
     $result = $db->query($selectSQL);
     $ligne = $result->fetch();
 
     if (!$ligne) {
-        $insertSQL = "INSERT INTO fiche_frais (id_utilisateur, mois, annee, id_etat) VALUES ($idUtilisateur, $fraisMois, $fraisAnnee, 1)";
+        $insertSQL = "INSERT INTO fiche_frais (id_utilisateur, mois, annee, id_etat) VALUES ($id_utilisateur, $mois, $annee, 1)";
         $db->exec($insertSQL);
     }
 
     // Mise à jour des frais forfaitaires
     foreach ($resultForfait as $ligneForfait) {
-        $idFrais = $ligneForfait["id_frais"];
+        $id_frais = $ligneForfait["id_frais"];
         $description = $ligneForfait["description"];
 
         if ($description == "repas" && $nombreRepas != 0) {
-            updateLigneFraisForfait($db, $idUtilisateur, $fraisMois, $fraisAnnee, $idFrais, $nombreRepas);
+            updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $nombreRepas);
         } elseif ($description == "nuit" && $nombreNuits != 0) {
-            updateLigneFraisForfait($db, $idUtilisateur, $fraisMois, $fraisAnnee, $idFrais, $nombreNuits);
+            updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $nombreNuits);
         } elseif ($description == "etape" && $nombreEtapes != 0) {
-            updateLigneFraisForfait($db, $idUtilisateur, $fraisMois, $fraisAnnee, $idFrais, $nombreEtapes);
+            updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $nombreEtapes);
         } elseif ($description == "kilométrage" && $nombreKilometres != 0) {
-            updateLigneFraisForfait($db, $idUtilisateur, $fraisMois, $fraisAnnee, $idFrais, $nombreKilometres);
+            updateLigneFraisForfait($db, $id_utilisateur, $mois, $annee, $id_frais, $nombreKilometres);
         }
     }
 }
 
 // Traitement des frais hors forfait
 $i = 1;
-while (isset($_POST["fraisDate" . $i]) && isset($_POST["fraisDescription" . $i]) && isset($_POST["fraisMontant" . $i])) {
-    $idUtilisateur = $_SESSION["idUtilisateur"];
-    $fraisMois = $_SESSION["fraisMois"] ?? date('m');
-    $fraisAnnee = $_SESSION["fraisAnnee"] ?? date('Y');
-    $fraisDate = $_POST["fraisDate" . $i];
-    $fraisDescription = $_POST["fraisDescription" . $i];
-    $fraisMontant = $_POST["fraisMontant" . $i];
+while (isset($_POST["FRA_AUT_DAT" . $i]) && isset($_POST["FRA_AUT_LIB" . $i]) && isset($_POST["FRA_AUT_MONT" . $i])) {
+    $id_utilisateur = $_SESSION["idUtilisateur"];
+    $mois = $_SESSION["fraisMois"] ?? date('m');
+    $annee = $_SESSION["fraisAnnee"] ?? date('Y');
+    $date = $_POST["FRA_AUT_DAT" . $i];
+    $libelle = $_POST["FRA_AUT_LIB" . $i];
+    $montant = $_POST["FRA_AUT_MONT" . $i];
 
-    if (empty($fraisDate) || empty($fraisDescription) || empty($fraisMontant)) {
+    if (empty($date) || empty($libelle) || empty($montant)) {
         $_SESSION["erreurHorsForfait"] = "Tous les champs des frais hors forfait doivent être renseignés.";
         header("Location: ../../php/formulaire-saisie-frais.php");
         exit();
     }
 
 
-    if (!is_numeric($fraisMontant) || $fraisMontant < 0) {
+    if (!is_numeric($montant) || $montant < 0) {
         $_SESSION["erreurHorsForfait"] = "Le montant doit être un nombre positif.";
         header("Location: ../../php/formulaire-saisie-frais.php");
         exit();
     }
 
-    if (!(DateTime::createFromFormat('Y-m-d', $fraisDate) && DateTime::createFromFormat('Y-m-d', $fraisDate)->format('Y-m-d') === $fraisDate)) {
+    if (!(DateTime::createFromFormat('Y-m-d', $date) && DateTime::createFromFormat('Y-m-d', $date)->format('Y-m-d') === $date)) {
         $_SESSION["erreurHorsForfait"] = "La date d'engagement doit être valide.";
         header("Location: ../../php/formulaire-saisie-frais.php");
         exit();
     }
 
-    if (strtotime($fraisDate) < strtotime('-1 year')) {
+    if (strtotime($date) < strtotime('-1 year')) {
         $_SESSION["erreurHorsForfait"] = "La date d'engagement doit se situer dans l’année écoulée.";
         header("Location: ../../php/formulaire-saisie-frais.php");
         exit();
     }
 
-    $selectSQL = "SELECT id_utilisateur, mois, annee FROM fiche_frais WHERE id_utilisateur = $idUtilisateur AND mois = $fraisMois AND annee = $fraisAnnee";
+    $selectSQL = "SELECT id_utilisateur, mois, annee FROM fiche_frais WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
     $result = $db->query($selectSQL);
     $ligne = $result->fetch();
 
     if (!$ligne) {
-        $insertSQL = "INSERT INTO fiche_frais (id_utilisateur, mois, annee, id_etat) VALUES ($idUtilisateur, $fraisMois, $fraisAnnee, 1)";
+        $insertSQL = "INSERT INTO fiche_frais (id_utilisateur, mois, annee, id_etat) VALUES ($id_utilisateur, $mois, $annee, 1)";
         $db->exec($insertSQL);
     }
 
-    updateLigneFraisHorsForfait($db, $idUtilisateur, $fraisMois, $fraisAnnee, $fraisDate, $fraisDescription, $fraisMontant);
+    updateLigneFraisHorsForfait($db, $id_utilisateur, $mois, $annee, $date, $libelle, $montant);
     $i++;
 }
 
 // Mettre à jour la date de modification
-$updateSQL = "UPDATE fiche_frais SET date_modification = current_timestamp() WHERE id_utilisateur = $idUtilisateur AND mois = $fraisMois AND annee = $fraisAnnee";
+$updateSQL = "UPDATE fiche_frais SET date_modification = current_timestamp() WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
 $db->exec($updateSQL);
 
 // Réinitialisation des session

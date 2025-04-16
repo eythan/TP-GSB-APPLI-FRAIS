@@ -3,20 +3,20 @@ session_start();
 require_once("../includes/database.inc.php");
 
 // Vérifié si l'utilisateur est connecté
-if (!isset($_SESSION["user_email"])) {
+if (!isset($_SESSION["emailUtilisateur"])) {
     header("location: ../index.php");
     exit();
 }
 
 // Vérifié si l'utilisateur est un visiteur ou un comptable
-if ($_SESSION["user_role"] != "Visiteur médical" && $_SESSION["user_role"] != "Comptable") {
+if ($_SESSION["roleUtilisateur"] != "Visiteur médical" && $_SESSION["roleUtilisateur"] != "Comptable") {
     header("location: ../index.php");
     exit();
 }
 
 if (isset($_POST["dateConsult"])) {
     $date = $_POST["dateConsult"];
-    $id_utilisateur = $_SESSION["user_id"];
+    $id_utilisateur = $_SESSION["idUtilisateur"];
 
     list($annee, $mois) = explode("-", $date);
 
@@ -24,18 +24,18 @@ if (isset($_POST["dateConsult"])) {
     $selectSQL = "SELECT id_frais, quantite FROM ligne_frais_forfait WHERE id_utilisateur = $id_utilisateur AND mois = $mois AND annee = $annee";
     $result = $db->query($selectSQL);
 
-    $_SESSION["consult_repas"] = $_SESSION["consult_nuit"] = $_SESSION["consult_etape"] = $_SESSION["consult_kilometre"] = 0;
+    $_SESSION["consultationRepas"] = $_SESSION["consultationNuits"] = $_SESSION["consultationEtapes"] = $_SESSION["consultationKilometres"] = 0;
 
     // Remplissage des valeurs des frais forfaitaires
     while ($ligne = $result->fetch()) {
         if ($ligne["id_frais"] == 1) {
-            $_SESSION["consult_repas"] = $ligne["quantite"];
+            $_SESSION["consultationRepas"] = $ligne["quantite"];
         } elseif ($ligne["id_frais"] == 2) {
-            $_SESSION["consult_nuit"] = $ligne["quantite"];
+            $_SESSION["consultationNuits"] = $ligne["quantite"];
         } elseif ($ligne["id_frais"] == 3) {
-            $_SESSION["consult_etape"] = $ligne["quantite"];
+            $_SESSION["consultationEtapes"] = $ligne["quantite"];
         } elseif ($ligne["id_frais"] == 4) {
-            $_SESSION["consult_kilometre"] = $ligne["quantite"];
+            $_SESSION["consultationKilometres"] = $ligne["quantite"];
         }
     }
 
@@ -43,10 +43,10 @@ if (isset($_POST["dateConsult"])) {
     $selectSQL = "SELECT ligne_frais_hors_forfait.date_frais, ligne_frais_hors_forfait.description, ligne_frais_hors_forfait.montant, etat.description AS etat_description, fiche_frais.date_modification FROM ligne_frais_hors_forfait, etat, fiche_frais WHERE ligne_frais_hors_forfait.id_utilisateur = fiche_frais.id_utilisateur AND fiche_frais.id_etat = etat.id_etat AND ligne_frais_hors_forfait.id_utilisateur = $id_utilisateur AND fiche_frais.mois = $mois AND fiche_frais.annee = $annee";
     $result = $db->query($selectSQL);
 
-    $_SESSION["consult_hors_forfait"] = [];
+    $_SESSION["ConsultationHorsForfait"] = [];
 
     foreach ($result as $ligne) {
-        $_SESSION["consult_hors_forfait"][] = [
+        $_SESSION["ConsultationHorsForfait"][] = [
             "date" => $ligne["date_frais"],
             "description" => $ligne["description"],
             "montant" => $ligne["montant"],

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["idUtilisateur"])) {
+if (!isset($_SESSION["emailUtilisateur"])) {
     header("location: ../index.php");
 }
 
@@ -15,10 +15,10 @@ $erreurHorsForfait = $_SESSION["erreurHorsForfait"] ?? "";
 unset($_SESSION["erreurDate"], $_SESSION["erreurForfait"], $_SESSION["erreurHorsForfait"]);
 
 
-$roleUtilisateur = $_SESSION["roleUtilisateur"];
+$role = $_SESSION["roleUtilisateur"];
 $nomUtilisateur = $_SESSION["nomUtilisateur"];
-$fraisMois = $_SESSION["fraisMois"] ?? date("m");
-$fraisAnnee = $_SESSION["fraisAnnee"] ?? date("Y");
+$mois = $_SESSION["fraisMois"] ?? date("m");
+$annee = $_SESSION["fraisAnnee"] ?? date("Y");
 ?>
 
 <!DOCTYPE html>
@@ -37,10 +37,10 @@ $fraisAnnee = $_SESSION["fraisAnnee"] ?? date("Y");
         <div class="sidebar">
             <img src="../assets/images/logo.png" alt="Logo">
             <div class="menu">
-                <div class="user">Compte : <?php echo strtolower($roleUtilisateur); ?></div>
+                <div class="user">Compte : <?php echo strtolower($role); ?></div>
                 <a href="formulaire-saisie-frais.php" style="color: #F5E1A4;">Création de frais</a>
                 <a href="formulaire-consultation-frais.php">Consultation des frais</a>
-                <?php if ($roleUtilisateur == "Comptable") { ?>
+                <?php if ($role == "Comptable") { ?>
                     <a href="formulaire-validation-frais.php">Gestion des frais</a>
                 <?php } ?>
             </div>
@@ -55,9 +55,9 @@ $fraisAnnee = $_SESSION["fraisAnnee"] ?? date("Y");
                 <form name="formPeriode" method="post" action="../../src/controllers/saisie-frais.php">
                     <h2>Périodes</h2>
                     <label>Mois :</label><input type="number" name="fraisMois" class="zone" min="1" max="12"
-                        placeholder="Mois" value="<?php echo $fraisMois; ?>" required>
+                        placeholder="Mois" value="<?php echo $mois; ?>" required>
                     <label>Année :</label><input type="number" name="fraisAnnee" class="zone" min="2000" max="2100"
-                        placeholder="Année" value="<?php echo $fraisAnnee; ?>" required>
+                        placeholder="Année" value="<?php echo $annee; ?>" required>
                     <br>
                     <?php
                     if (!empty($erreurDate)) {
@@ -70,16 +70,16 @@ $fraisAnnee = $_SESSION["fraisAnnee"] ?? date("Y");
 
                 <form name="formSaisieFrais" method="post" action="../../src/controllers/saisie-frais.php">
                     <h2>Frais forfaitaires</h2>
-                    <label class="titre">Repas :</label><input type="number" name="nombreRepas" class="zone" min="0"
+                    <label class="titre">Repas :</label><input type="number" name="fraisRepas" class="zone" min="0"
                         max="999999" placeholder="Nombre de repas"
                         value="<?php echo isset($_SESSION['nombreRepas']) ? $_SESSION['nombreRepas'] : '0'; ?>">
-                    <label class="titre">Nuitées :</label><input type="number" name="nombreNuits" class="zone" min="0"
+                    <label class="titre">Nuitées :</label><input type="number" name="fraisNuits" class="zone" min="0"
                         max="999999" placeholder="Nombre de nuitées"
                         value="<?php echo isset($_SESSION['nombreNuits']) ? $_SESSION['nombreNuits'] : '0'; ?>">
-                    <label class="titre">Étape :</label><input type="number" name="nombreEtapes" class="zone" min="0"
+                    <label class="titre">Étape :</label><input type="number" name="fraisEtapes" class="zone" min="0"
                         max="999999" placeholder="Nombre d'étapes"
                         value="<?php echo isset($_SESSION['nombreEtapes']) ? $_SESSION['nombreEtapes'] : '0'; ?>">
-                    <label class="titre">Km :</label><input type="number" name="nombreKilometres" class="zone" min="0"
+                    <label class="titre">Km :</label><input type="number" name="fraisKilometres" class="zone" min="0"
                         max="999999" placeholder="Distance en km"
                         value="<?php echo isset($_SESSION['nombreKilometres']) ? $_SESSION['nombreKilometres'] : '0'; ?>">
                     <br>
@@ -102,17 +102,17 @@ $fraisAnnee = $_SESSION["fraisAnnee"] ?? date("Y");
                             while ($i < count($_SESSION["fraisHorsForfait"])) {
                                 $frais = $_SESSION["fraisHorsForfait"][$i];
                                 echo '<label class="titre">Frais numéro ' . ($i + 1) . '</label>';
-                                echo '<input type="date" name="fraisDate' . ($i + 1) . '" class="zone" placeholder="Date" value="' . $frais['dateHorsForfait'] . '">';
-                                echo '<input type="texte" name="fraisDescription' . ($i + 1) . '" class="zone" placeholder="Libellé" value="' . $frais['descriptionHorsForfait'] . '">';
-                                echo '<input type="number" name="fraisMontant' . ($i + 1) . '" class="zone" placeholder="Montant" value="' . $frais['montantHorsForfait'] . '">';
+                                echo '<input type="date" name="FRA_AUT_DAT' . ($i + 1) . '" class="zone" placeholder="Date" value="' . $frais['date'] . '">';
+                                echo '<input type="texte" name="FRA_AUT_LIB' . ($i + 1) . '" class="zone" placeholder="Libellé" value="' . $frais['libelle'] . '">';
+                                echo '<input type="number" name="FRA_AUT_MONT' . ($i + 1) . '" class="zone" placeholder="Montant" value="' . $frais['montant'] . '">';
                                 $i++;
                             }
                             echo '<input type="button" id="but' . ($i) . '" value="+" onclick="ajoutLigne(' . ($i) . ');" class="zone">';
                         } else {
                             echo '<label class="titre">Frais numéro 1</label>';
-                            echo '<input type="date" name="fraisDate1" class="zone" placeholder="Date">';
-                            echo '<input type="texte" name="fraisDescription1" class="zone" placeholder="Libellé">';
-                            echo '<input type="number" name="fraisMontant1" class="zone" placeholder="Montant">';
+                            echo '<input type="date" name="FRA_AUT_DAT1" class="zone" placeholder="Date">';
+                            echo '<input type="texte" name="FRA_AUT_LIB1" class="zone" placeholder="Libellé">';
+                            echo '<input type="number" name="FRA_AUT_MONT1" class="zone" placeholder="Montant">';
                             echo '<input type="button" id="but1" value="+" onclick="ajoutLigne(1);" class="zone">';
                         }
                         ?>

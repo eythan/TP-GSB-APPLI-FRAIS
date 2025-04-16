@@ -1,16 +1,16 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["user_email"])) {
+if (!isset($_SESSION["emailUtilisateur"])) {
     header("location: ../index.php");
 }
 
-if ($_SESSION["user_role"] != "Visiteur médical" && $_SESSION["user_role"] != "Comptable") {
+if ($_SESSION["roleUtilisateur"] != "Visiteur médical" && $_SESSION["roleUtilisateur"] != "Comptable") {
     header("location: ../index.php");
 }
 
-$role = $_SESSION["user_role"];
-$username = $_SESSION["username"];
+$role = $_SESSION["roleUtilisateur"];
+$nomUtilisateur = $_SESSION["nomUtilisateur"];
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +36,7 @@ $username = $_SESSION["username"];
                     <a href="formulaire-validation-frais.php">Gestion des frais</a>
                 <?php } ?>
             </div>
-            <div class="user">Bonjour <?php echo $username; ?></div>
+            <div class="user">Bonjour <?php echo $nomUtilisateur; ?></div>
             <a href="../../src/controllers/deconnexion-utilisateur.php" class="logout">Déconnexion</a>
         </div>
         <div class="content">
@@ -62,10 +62,10 @@ $username = $_SESSION["username"];
                             <th>Remboursement</th>
                         </tr>
                         <tr>
-                            <td><label name="repas"></label><?php echo $_SESSION['consult_repas'] ?? '0' ?></td>
-                            <td><label name="nuitee"></label><?php echo $_SESSION['consult_nuit'] ?? '0' ?></td>
-                            <td><label name="etape"></label><?php echo $_SESSION['consult_etape'] ?? '0' ?></td>
-                            <td><label name="km"></label><?php echo $_SESSION['consult_kilometre'] ?? '0' ?></td>
+                            <td><label name="repas"></label><?php echo $_SESSION['consultationRepas'] ?? '0' ?></td>
+                            <td><label name="nuitee"></label><?php echo $_SESSION['consultationNuits'] ?? '0' ?></td>
+                            <td><label name="etape"></label><?php echo $_SESSION['consultationEtapes'] ?? '0' ?></td>
+                            <td><label name="km"></label><?php echo $_SESSION['consultationKilometres'] ?? '0' ?></td>
                             <td><label name="situation"></label></td>
                             <td><label name="dateOper"></label></td>
                             <td><label name="remboursement"></label></td>
@@ -84,8 +84,8 @@ $username = $_SESSION["username"];
                         </tr>
 
                         <?php
-                        if (isset($_SESSION["consult_hors_forfait"]) && !empty($_SESSION["consult_hors_forfait"])) {
-                            foreach ($_SESSION["consult_hors_forfait"] as $frais) { ?>
+                        if (isset($_SESSION["ConsultationHorsForfait"]) && !empty($_SESSION["ConsultationHorsForfait"])) {
+                            foreach ($_SESSION["ConsultationHorsForfait"] as $frais) { ?>
                                 <tr>
                                     <td><label name='hfDate1'><?= $frais["date"] ?></label></td>
                                     <td><label name='hfLib1'><?php echo $frais["description"]; ?></label></td>
