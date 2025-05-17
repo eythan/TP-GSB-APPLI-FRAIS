@@ -24,7 +24,6 @@ if (isset($_SESSION["erreurInscription"])) {
             <h1>Inscription</h1>
             <br>
             <form method="post" action="../../src/controllers/inscription-utilisateur.php">
-
                 <label for="mail">Email</label>
                 <input type="email" id="mail" name="mail" class="zone" placeholder="Votre email" required>
 

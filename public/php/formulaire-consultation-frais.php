@@ -46,7 +46,7 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
         </div>
         <div class="content">
             <div id="haut">
-                <h1>Création de frais</h1>
+                <h1>Consultation des frais</h1>
             </div>
             <div>
                 <form name="formPeriode" method="post" action="../../src/controllers/consultation-frais.php">
@@ -75,9 +75,9 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                             <td><label name="nuitee"></label><?php echo $_SESSION['consultationNuits'] ?? '0' ?></td>
                             <td><label name="etape"></label><?php echo $_SESSION['consultationEtapes'] ?? '0' ?></td>
                             <td><label name="km"></label><?php echo $_SESSION['consultationKilometres'] ?? '0' ?></td>
-                            <td><label name="situation"></label></td>
-                            <td><label name="dateOperation"></label></td>
-                            <td><label name="remboursement"></label></td>
+                            <td><label name="situation"><?php echo $_SESSION['situation'] ?? '' ?></label></td>
+                            <td><label name="dateOperation"><?php echo $_SESSION['dateOperation'] ?? '' ?></label></td>
+                            <td><label name="remboursement"><?php echo $_SESSION['remboursement'] ?? '' ?></label></td>
                         </tr>
                     </table>
                     <br>
@@ -99,7 +99,6 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                                     <td><label name='montantHorsFrais'><?php echo $frais["montant"]; ?></label></td>
                                     <td><label name='etatHorsFrais'><?php echo $frais["etat_description"]; ?></label></td>
                                     <td><label name='dateOperationHorsFrais'><?php echo $frais["date_modification"]; ?></label>
-                                    </td>
                                 </tr>
                             <?php }
                         } ?>

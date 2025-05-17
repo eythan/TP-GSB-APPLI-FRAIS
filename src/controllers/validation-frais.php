@@ -77,6 +77,11 @@ if (isset($_POST["dateConsult"])) {
     $_SESSION["remboursement"] = $ligne["id_etat"] == 4 ? "Oui" : "Non";
 }
 
+// Récupération des visiteurs pour le menu déroulant
+$reqSQL = "SELECT id_utilisateur, nom, prenom FROM utilisateurs WHERE role = 'Visiteur médical'";
+$result = $db->query($reqSQL);
+$_SESSION["visiteurs"] = $result->fetchAll();
+
 // Redirection vers le formulaire
 header("Location: ../../php/formulaire-consultation-frais.php");
 exit();

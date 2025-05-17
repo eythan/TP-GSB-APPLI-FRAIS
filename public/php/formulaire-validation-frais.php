@@ -40,9 +40,65 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
             <a href="../../src/controllers/deconnexion-utilisateur.php" class="logout">Déconnexion</a>
         </div>
         <div class="content">
-
+            <div id="haut">
+                <h1>Gestion des frais</h1>
+            </div>
+            <div>
+                <form name="formPeriode" method="post" action="../../src/controllers/validation-frais.php">
+                    <h2>Périodes</h2>
+                    <label for="titre">Visiteur :</label>
+                    <select name="selectVisiteur" class="zone" required>
+                        <option value="*">--Choisir un visiteur--</option>
+                    </select>
+                    <label for="titre">Mois / Année :</label>
+                    <input type="month" name="dateConsult" class="zone" required>
+                    <br>
+                    <?php
+                    if (!empty($erreurConsultation)) { ?>
+                        <label style="color: red; display: block; text-align: center;"><?php echo $erreurConsultation ?></label>
+                    <?php } ?>
+                    <input type="submit" value="Valider la période" class="zone">
+                    <h2>Frais au forfait</h2>
+                    <table>
+                        <tr>
+                            <th>Repas midi</th>
+                            <th>Nuitée</th>
+                            <th>Etape</th>
+                            <th>Km</th>
+                            <th>Situation</th>
+                        </tr>
+                        <tr>
+                            <td><label name="repas"></label><?php echo $_SESSION['consultationRepas'] ?? '0' ?></td>
+                            <td><label name="nuitee"></label><?php echo $_SESSION['consultationNuits'] ?? '0' ?></td>
+                            <td><label name="etape"></label><?php echo $_SESSION['consultationEtapes'] ?? '0' ?></td>
+                            <td><label name="km"></label><?php echo $_SESSION['consultationKilometres'] ?? '0' ?></td>
+                            <td><label name="situation"><?php echo $_SESSION['situation'] ?? 'Erreur' ?></label></td>
+                        </tr>
+                    </table>
+                    <br>
+                    <h2>Hors Forfait</h2>
+                    <table>
+                        <tr>
+                            <th>Date</th>
+                            <th>Libellé</th>
+                            <th>Montant</th>
+                            <th>Situation</th>
+                        </tr>
+                        <?php
+                        if (isset($_SESSION["ConsultationHorsForfait"]) && !empty($_SESSION["ConsultationHorsForfait"])) {
+                            foreach ($_SESSION["ConsultationHorsForfait"] as $frais) { ?>
+                                <tr>
+                                    <td><label name='dateHorsFrais'><?= $frais["date"] ?></label></td>
+                                    <td><label name='descriptionHorsFrais'><?php echo $frais["description"]; ?></label></td>
+                                    <td><label name='montantHorsFrais'><?php echo $frais["montant"]; ?></label></td>
+                                    <td><label name='etatHorsFrais'><?php echo $frais["etat_description"]; ?></label></td>
+                                </tr>
+                            <?php }
+                        } ?>
+                    </table>
+                </form>
+            </div>
         </div>
-        <script src="../js/script.js"></script>
 </body>
 
 </html>
