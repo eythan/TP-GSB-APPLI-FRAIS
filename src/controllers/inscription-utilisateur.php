@@ -41,7 +41,7 @@ if ($ligne) {
 // Hachage du mot de passe
 $securePassword = hash("sha256", $password);
 
-$insertSQL = "INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, adresse, code_postal, ville) VALUES ('$lastname', '$firstname', '$mail', '$securePassword', 'visiteur', '$address', '$postal', '$city')";
+$insertSQL = "INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, adresse, code_postal, ville) VALUES ('$lastname', '$firstname', '$mail', '$securePassword', 'Visiteur médical', '$address', '$postal', '$city')";
 $db->exec($insertSQL);
 
 $_SESSION["emailUtilisateur"] = $mail;

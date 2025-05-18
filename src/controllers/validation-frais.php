@@ -16,18 +16,24 @@ if ($_SESSION["roleUtilisateur"] != "Visiteur médical" && $_SESSION["roleUtilis
 
 if (isset($_POST["dateConsult"])) {
     $date = $_POST["dateConsult"];
-    $id_utilisateur = $_SESSION["idUtilisateur"];
+    $id_utilisateur = intval($_POST["selectVisiteur"]);
 
     list($annee, $mois) = explode("-", $date);
 
+    if (empty($id_utilisateur)) {
+        $_SESSION["erreurValidation"] = "Aucun visiteur sélectionné.";
+        header("Location: ../../php/formulaire-validation-frais.php");
+        exit();
+    }
+
     if (!preg_match("/^\d{2}$/", $mois) || $mois < 1 || $mois > 12) {
-        $_SESSION["erreurConsultation"] = "Le mois doit être compris entre 01 et 12.";
-        header("Location: ../../php/formulaire-consultation-frais.php");
+        $_SESSION["erreurValidation"] = "Le mois doit être compris entre 01 et 12.";
+        header("Location: ../../php/formulaire-validation-frais.php");
         exit();
     }
 
     if (!preg_match("/^\d{4}$/", $annee)) {
-        $_SESSION["erreurConsultation"] = "Le format de l'année n'est pas correct.";
+        $_SESSION["erreurValidation"] = "Le format de l'année n'est pas correct.";
         header("Location: ../../php/formulaire-consultation-frais.php");
         exit();
     }
@@ -72,17 +78,11 @@ if (isset($_POST["dateConsult"])) {
     $result = $db->query($selectSQL);
 
     $ligne = $result->fetch();
-    $_SESSION["situation"] = $ligne["etat_description"];
     $_SESSION["dateOperation"] = $ligne["date_modification"];
     $_SESSION["remboursement"] = $ligne["id_etat"] == 4 ? "Oui" : "Non";
 }
 
-// Récupération des visiteurs pour le menu déroulant
-$reqSQL = "SELECT id_utilisateur, nom, prenom FROM utilisateurs WHERE role = 'Visiteur médical'";
-$result = $db->query($reqSQL);
-$_SESSION["visiteurs"] = $result->fetchAll();
-
 // Redirection vers le formulaire
-header("Location: ../../php/formulaire-consultation-frais.php");
+header("Location: ../../php/formulaire-validation-frais.php");
 exit();
 ?>

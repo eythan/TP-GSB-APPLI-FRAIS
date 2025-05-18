@@ -1,16 +1,21 @@
 <?php
 session_start();
+require_once("../../src/includes/database.inc.php");
 
 if (!isset($_SESSION["emailUtilisateur"])) {
     header("location: ../index.php");
+    exit();
 }
-
 if ($_SESSION["roleUtilisateur"] != "Comptable") {
     header("location: ../index.php");
+    exit();
 }
 
 $role = $_SESSION["roleUtilisateur"];
 $nomUtilisateur = $_SESSION["nomUtilisateur"];
+
+$selectSQL = "SELECT id_utilisateur, nom, prenom FROM utilisateurs WHERE role = 'Visiteur médical'";
+$result = $db->query($selectSQL);
 ?>
 
 <!DOCTYPE html>
@@ -49,9 +54,14 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                     <label for="titre">Visiteur :</label>
                     <select name="selectVisiteur" class="zone" required>
                         <option value="*">--Choisir un visiteur--</option>
+                        <?php
+                        while ($ligne = $result->fetch()) {
+                            echo "<option value='" . $ligne["id_utilisateur"] . "'>" . $ligne["nom"] . " " . $ligne["prenom"] . "</option>";
+                        }
+                        ?>
                     </select>
                     <label for="titre">Mois / Année :</label>
-                    <input type="month" name="dateConsult" class="zone" required>
+                    <input type="month" name="dateConsult" class="zone" required value="<?php echo date('Y-m'); ?>">
                     <br>
                     <?php
                     if (!empty($erreurConsultation)) { ?>
@@ -72,7 +82,14 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                             <td><label name="nuitee"></label><?php echo $_SESSION['consultationNuits'] ?? '0' ?></td>
                             <td><label name="etape"></label><?php echo $_SESSION['consultationEtapes'] ?? '0' ?></td>
                             <td><label name="km"></label><?php echo $_SESSION['consultationKilometres'] ?? '0' ?></td>
-                            <td><label name="situation"><?php echo $_SESSION['situation'] ?? 'Erreur' ?></label></td>
+                            <td>
+                                <select name="selectSituation" class="zone">
+                                <option value="1">Fiche créee, saisie en cours</option>
+                                <option value="2">Saisie clôturée</option>
+                                <option value="3">Validée et mise en paiement</option>
+                                <option value="4">Remboursée</option>
+                                </select>
+                            </td>
                         </tr>
                     </table>
                     <br>
@@ -91,7 +108,14 @@ $nomUtilisateur = $_SESSION["nomUtilisateur"];
                                     <td><label name='dateHorsFrais'><?= $frais["date"] ?></label></td>
                                     <td><label name='descriptionHorsFrais'><?php echo $frais["description"]; ?></label></td>
                                     <td><label name='montantHorsFrais'><?php echo $frais["montant"]; ?></label></td>
-                                    <td><label name='etatHorsFrais'><?php echo $frais["etat_description"]; ?></label></td>
+                                    <td>
+                                        <select name="selectSituation" class="zone">
+                                        <option value="1">Fiche créee, saisie en cours</option>
+                                        <option value="2">Saisie clôturée</option>
+                                        <option value="3">Validée et mise en paiement</option>
+                                        <option value="4">Remboursée</option>
+                                        </select>
+                                    </td>
                                 </tr>
                             <?php }
                         } ?>
